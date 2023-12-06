@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Buat hide/show user sign up
+        function showSignUpWorker() {
+          $(".select-container").hide();
+          $("#signupworker").show();
+        }
+        
+        // Buat hide/show company sign up
+        function showSignUpCompany() {
+          $(".select-container").hide();
+          $("#signupcompany").show();
+        }
+  
+      </script>
+
+    <title>Login and Sign-Up</title>
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+
+      .select-container,
+      .signup-container {
+        max-width: 400px;
+        margin: 100px auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2, h5 {
+        text-align: center;
+      }
+
+      form {
+        margin-top: 20px;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      a {
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+      }
+      
+      button {
+        margin: 5px;
+      }
+
+      .signup-container {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Selection Page -->
+    <div class="container select-container">
+      <h2>Selamat datang di Placeholder</h2>
+      <h5>Anda mendaftar sebagai apa?</h5>
+      <form id="selectionForm">
+        <button type="button" class="btn btn-primary" onclick="showSignUpWorker()">Pekerja</button>
+        <button type="button" class="btn btn-primary" onclick="showSignUpCompany()">Perusahaan</button>
+      </form>
+    </div>
+    
+    <!-- Sign-Up Page Pekerja-->
+    <div class="container signup-container" id="signupworker">
+      <h2>Selamat datang di Placeholder</h2>
+      <form action="signup.php" method="post">
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Username"
+            id="fullname"
+            name="fullname"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <input
+            type="email"
+            class="form-control"
+            placeholder="Email"
+            id="email"
+            name="email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <input
+            type="password"
+            class="form-control"
+            placeholder="Password"
+            id="signup-password"
+            name="signup-password"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <input
+            type="password"
+            class="form-control"
+            placeholder="Konfirmasi Password"
+            id="confirm-password"
+            name="confirm-password"
+            required
+          />
+        </div>
+
+        <a href="signin.html">Sudah punya akun? Masuk sekarang</a>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+    </div>
+
+    <div class="container signup-container" id="signupcompany">
+        <h2>Selamat datang di Placeholder</h2>
+        <form action="signup.php" method="post">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Nama Perusahaan"
+              id="fullname"
+              name="fullname"
+              required
+            />
+          </div>
+  
+          <div class="form-group">
+            <input
+              type="email"
+              class="form-control"
+              placeholder="Email Perusahaan"
+              id="email"
+              name="email"
+              required
+            />
+          </div>
+  
+          <div class="form-group">
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Password"
+              id="signup-password"
+              name="signup-password"
+              required
+            />
+          </div>
+  
+          <div class="form-group">
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Konfirmasi Password"
+              id="confirm-password"
+              name="confirm-password"
+              required
+            />
+          </div>
+          <a href="signin.html">Sudah punya akun? Masuk sekarang</a>
+          <button type="submit" class="btn btn-primary">Sign Up</button>
+      </div>
+
+
+  </body>
+</html>
