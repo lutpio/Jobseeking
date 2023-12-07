@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <title>Bootstrap Sidebar Example</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <style>
+      #sidebar {
+        background-color: #7c8ef3;
+        color: #fff;
+        height: 100vh;
+        width: 150px;
+      }
+
+      #sidebar a {
+        color: #fff;
+      }
+
+      .main-content {
+        padding-top: 100px;
+      }
+
+      .content-container {
+        background-color: #fff;
+        padding: 20px;
+        min-height: 100vh;
+      }
+      .content-container section p {
+        word-wrap: break-word;
+        max-width: 100%;
+      }
+    </style>
+  </head>
+
+  <body class="bg-light">
+    <!-- Ini mulau navbarnya -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="index.html">Placeholder</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Profile</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- ini mulai sidebarnya -->
+        <nav
+          id="sidebar"
+          class="col-md-3 col-lg-2 d-md-block bg-dark fixed-left position-fixed"
+          style="padding-top: 50px"
+        >
+          <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" href="#"> Home </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#"> Search Bar </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="page2Dropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Lowongan
+                </a>
+                <div class="dropdown-menu" aria-labelledby="page2Dropdown">
+                  <a style="color: black" class="dropdown-item" href="#"
+                    >Semua Lowongan</a
+                  >
+                  <a style="color: black" class="dropdown-item" href="#"
+                    >Lowongan Anda</a
+                  >
+                  <!-- kalau mau nambah dropdown menu tambah <a> disini lagi -->
+                </div>
+              </li>
+              <!-- kalau mau nambah sidebar disini letak <li> lagi -->
+            </ul>
+          </div>
+        </nav>
+
+        <main
+          role="main"
+          class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content"
+        >
+          <a href="anjay.html"> < Kembali</a>
+          <article class="content-container">
+            <!-- PAKE JINJA2 BUAT APPEND NANTI
+            kurang loopnya, tapi aku tulis dulu {{}} nya, klok di DB beda ubah aja -->
+            <header>
+              <h2>{{ jobname }}</h2>
+              <p>{{ jobplace }} - {{jobpost}}</p>
+              <p>Gaji Rp. {{ wagemin }} - Rp. {{ wagemax }}</p>
+            </header>
+            <section>
+              <h3>Deskripsi Pekerjaan</h3>
+              <p>{{ jobdesc }}</p>
+            </section>
+            <section>
+              <span class="badge rounded-pill bg-primary">{{ tag }}</span>
+              <button type="button" class="btn btn-primary float-right mb-3">
+                Primary
+              </button>
+            </section>
+          </article>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
