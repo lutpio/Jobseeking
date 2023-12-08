@@ -46,10 +46,13 @@
     </style>
   </head>
   <body>
-
     <!-- Login -->
     <div class="container login-container">
+      {% if msg %}
+      <div class="alert alert-warning" role="alert">{{ msg }}</div>
+      {% endif %}
       <h2>Selamat datang di Placeholder</h2>
+      <p>Fungsi login belum jalan, menunggu halaman setelah login</p>
       <form action="login.php" method="post">
         <div class="form-group">
           <input
@@ -75,7 +78,7 @@
 
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
-      <a href="signup.html">Belum punya akun? daftar sekarang</a>
+      <a href="/sign-up">Belum punya akun? daftar sekarang</a>
     </div>
   </body>
 </html>
