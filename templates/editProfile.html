@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EditProfile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="/docs/5.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <header class="navbar navbar-expand-lg navbar-light bg-light" style="padding-bottom: 0px;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">KERJA.DONG</a>
+      <nav class="navbar navbar-light bg-light justify-content-end">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208" alt=""
+              width="30" height="30" class="d-inline-block align-text-top">
+            Profile
+          </a>
+        </div>
+      </nav>
+    </div>
+    <hr>
+  </header>
+  <hr style="margin-top: 0%;">
+  <nav class="align-baseline">
+    <div class="d-inline-flex position-sticky" style="display: inline-block; align-items: baseline;">
+      <nav class="col-8" style="width: 150px; height: 500px; display: inline-block;">
+        <span>
+          <ul class="list-unstyled ps-0">
+            <li class="mb-1">
+              <img src="" alt="">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                data-bs-target="#home-collapse" aria-expanded="false">
+                <img src="https://cdn-icons-png.flaticon.com/512/10263/10263239.png?ga=GA1.1.1358335958.1701954208"
+                  class="b1 me-2" height="16" width="16">
+                Home
+              </button>
+            </li>
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                data-bs-target="#Search-collapse" aria-expanded="false">
+                <img src="https://cdn-icons-png.flaticon.com/512/151/151773.png?ga=GA1.1.1358335958.1701954208"
+                  class="b1 me-2" height="16" width="16">
+                Search
+              </button>
+            </li>
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                data-bs-target="#orders-collapse" aria-expanded="false">
+                <img src="https://cdn-icons-png.flaticon.com/512/4389/4389454.png?ga=GA1.1.1358335958.1701954208"
+                  class="b1 me-2" height="16" width="16">
+                Lowongan
+              </button>
+              <div class="collapse" id="orders-collapse" style>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li><a href="#" class="link-dark rounded">Lowongan Anda</a></li>
+                  <li><a href="#" class="link-dark rounded">Semua Lowongan</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </span>
+      </nav>
+    </div>
+
+    <div class="d-inline-flex flex-grow-1 " style="display: inline-flex; align-items: center; height:max-content">
+      <main class="row ">
+        <article>
+          <main class="col-9" style="display: inline-block; align-self: baseline;">
+            <h4>Edit Profile</h4>
+          </main>
+        </article>
+        <article class="d-inline-flex " style="margin-top: 10px; width: 400px;">
+          <div id="deskripsi" style="width: 400px;">
+            <div class="mb-3" style="width: 350px;">
+              <label for="exampleFormControlInput1" class="form-label">Nama Lengkap</label>
+              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+            </div>
+            <div class="mb-3">
+              <p style="margin-bottom: 6px;">Jenis Kelamin</p>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Laki-laki</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                <label class="form-check-label" for="inlineCheckbox2">Perempuan</label>
+              </div>
+            </div>
+            <div class="mb-3" style="width: 350px;">
+              <label for="exampleFormControlInput1" class="form-label">Alamat Domisili</label>
+              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+            </div>
+            <div class="mb-3" style="width: 350px;">
+              <label for="exampleFormControlInput1" class="form-label">Asal Universitas</label>
+              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+            </div>
+            <div class="mb-3" style="width: 350px;">
+              <label for="exampleFormControlInput1" class="form-label">Jurusan</label>
+              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+            </div>
+            <div class="mb-3" style="width: 350px;">
+              <label for="exampleFormControlInput1" class="form-label">Tahun Masuk</label>
+              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+            </div>
+            <div>
+              <label for="exampleFormControlInput1" class="form-label">Deskripsi Diri</label>
+              <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"
+                  style="height: 100px"></textarea>
+              </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-3">
+              <button class="btn btn-primary me-md-2" type="button">Cancel</button>
+              <button class="btn btn-primary" type="button">Save</button>
+            </div>
+            
+          </div>
+          <div id="Sertifikasi" style="width: 400px;margin-left: 100px;">
+            <div>
+              <p style="width: 200px;">Tambah Sertifikasi</p>
+              <div class="d-inline-flex">
+                <a href="">CV</a>
+                <a style="padding-left: 30px;" href="">Sertifikasi</a>
+              </div>
+            </div>
+            <div>
+              <div style="margin-left: 0%; padding-top: 30px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208" alt=""
+                  width="60" height="60" class="d-inline-block align-self-center">
+                <a class="btn btn-primary align-items-baseline " href="#" role="button">Ubah Foto</a>
+              </div>
+            </div>
+          </div>
+    </div>
+    </article>
+    </main>
+    </div>
+  </nav>
+
+
+</body>
+
+</html>
