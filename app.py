@@ -12,11 +12,108 @@ MONGODB_CONNECTION_STRING = "mongodb+srv://ahmadlutfi606:wolfattax@cluster0.xctx
 client = MongoClient(MONGODB_CONNECTION_STRING)
 db = client.jobseeking
 
+SECRET_KEY = "SEEKER"
 TOKEN_KEY = "mytoken"
 
 
-@app.route("/sign-in")
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/job-post")
+def job_post():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.company.find_one({"email": payload["id"]})
+        return render_template("jobpost.html", user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
+
+
+@app.route("/user-info")
+def user_info():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.seeker.find_one({"email": payload["id"]})
+        return render_template("userinfo.html", user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
+
+
+@app.route("/user-edit")
+def user_edit():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.seeker.find_one({"email": payload["id"]})
+        return render_template("editProfile.html", user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
+
+
+@app.route("/user-job")
+def user_job():
+    return render_template("userjob.html")
+
+
+@app.route("/user-jobdetail")
+def user_jobdetail():
+    return render_template("userjobdetail.html")
+
+
+@app.route("/sign-in", methods=["GET", "POST"])
 def sign_in():
+    if request.method == "POST":
+        email_receive = request.form["email_give"]
+        password_receive = request.form["password_give"]
+        pw_hash = hashlib.sha256(password_receive.encode("utf-8")).hexdigest()
+        role = request.form["role_give"]
+        if role == "pekerja":
+            namespace = db.seeker
+        elif role == "perusahaan":
+            namespace = db.company
+        else:
+            return jsonify(
+                {
+                    "result": "fail",
+                    "msg": "Pilih role dengan benar",
+                }
+            )
+        result = namespace.find_one(
+            {
+                "email": email_receive,
+                "password": pw_hash,
+            }
+        )
+        if result:
+            payload = {
+                "id": email_receive,
+                # the token will be valid for 24 hours
+                "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),
+            }
+            token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
+            return jsonify({"result": "success", "token": token, "role": role})
+
+        else:
+            return jsonify(
+                {
+                    "result": "fail",
+                    "msg": "Email atau password salah",
+                }
+            )
     msg = request.args.get("msg")
     return render_template("signin.html", msg=msg)
 

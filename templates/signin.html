@@ -10,6 +10,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <title>Login and Sign-Up</title>
     <style>
       body {
@@ -44,6 +46,35 @@
         margin-top: 10px;
       }
     </style>
+    <script>
+      function sign_in() {
+        let password = $("#password").val();
+        let email = $("#email").val();
+        let role = $("#role").val();
+
+        $.ajax({
+          type: "POST",
+          url: "/sign-in",
+          data: {
+            role_give: role,
+            email_give: email,
+            password_give: password,
+          },
+          success: function (response) {
+            if (response["result"] === "success") {
+              $.cookie("mytoken", response["token"], { path: "/" });
+              if (response["role"] == "pekerja") {
+                window.location.replace("/user-info");
+              } else {
+                window.location.replace("/job-post");
+              }
+            } else {
+              alert(response["msg"]);
+            }
+          },
+        });
+      }
+    </script>
   </head>
   <body>
     <!-- Login -->
@@ -52,32 +83,37 @@
       <div class="alert alert-warning" role="alert">{{ msg }}</div>
       {% endif %}
       <h2>Selamat datang di Placeholder</h2>
-      <p>Fungsi login belum jalan, menunggu halaman setelah login</p>
-      <form action="login.php" method="post">
-        <div class="form-group">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Username/Email"
-            id="username"
-            name="username"
-            required
-          />
-        </div>
 
-        <div class="form-group">
-          <input
-            type="password"
-            class="form-control"
-            placeholder="Password"
-            id="password"
-            name="password"
-            required
-          />
-        </div>
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Email"
+          id="email"
+          name="email"
+          required
+        />
+      </div>
 
-        <button type="submit" class="btn btn-primary">Login</button>
-      </form>
+      <div class="form-group">
+        <input
+          type="password"
+          class="form-control"
+          placeholder="Password"
+          id="password"
+          name="password"
+          required
+        />
+      </div>
+      <select class="custom-select mb-3 w-50" id="role">
+        <option value="">-Pilih Role-</option>
+        <option value="pekerja">Pekerja</option>
+        <option value="perusahaan">Perusahaan</option>
+      </select>
+      <button type="button" onclick="sign_in()" class="btn btn-primary">
+        Login
+      </button>
+
       <a href="/sign-up">Belum punya akun? daftar sekarang</a>
     </div>
   </body>
