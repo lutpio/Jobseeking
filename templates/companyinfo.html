@@ -166,7 +166,7 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-              Username
+              {{ user_info.name }}
             </a>
             <div class="dropdown-menu" aria-labelledby="page2Dropdown">
               <a style="color: black" class="dropdown-item" href="#">Profil</a>
@@ -227,15 +227,20 @@
             <div class="row">
               <div class="col-md-2">
                 <img
-                  src="profile-picture.jpg"
+                  {% if user_info.company_pic %}
+                  src="static/{{ user_info.company_pic }}"
+                  {% else %}
+                  
+                  src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+                  {% endif %}
                   alt="Profile Picture"
                   class="img-fluid rounded-circle"
                 />
               </div>
               <div class="col-md-10">
-                <p>Nama Perusahaan</p>
-                <p>Alamat</p>
-                <p>Bidang Perusahaan</p>
+                <p>{{ user_info.name if user_info.name else 'Nama Perusahaan' }}</p>
+                <p>{{ user_info.address if user_info.address else 'Alamat Perusahaan' }}</p>
+                <p>{{ user_info.sector if user_info.sector else 'Sektor Perusahaan' }}</p>
 
                 <div class="d-flex justify-content-end mb-3">
                   <a href="#" class="social-icon">
@@ -247,7 +252,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end align-items-end">
-                  <button class="btn btn-primary">Edit</button>
+                  <a href="/company-edit" class="btn btn-primary">Edit</a>
                 </div>
               </div>
             </div>
@@ -255,7 +260,7 @@
 
           <div class="container">
             <h3>Deskripsi Perusahaan</h3>
-            <p>Ini untuk deskripsi profil perusahaan.</p>
+            <div>{{ user_info.description | safe }}</div>
           </div>
 
           <div class="container">

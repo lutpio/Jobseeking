@@ -23,15 +23,51 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/job-post")
+@app.route("/job-post", methods=["GET", "POST"])
 def job_post():
+    if request.method == "POST":
+        new_doc = {
+            "company": request.form["uuid"],
+            "position": request.form["position"],
+            "description": request.form["description"],
+            "province": request.form["prov"],
+            "regency": request.form["kot"],
+            "address": request.form["address"],
+            "time_period": request.form["time_period"],
+            "wage_min": request.form["wage_min"],
+            "wage_max": request.form["wage_max"],
+            "department": request.form["department"],
+            "tag1": request.form["tag1"],
+            "tag2": request.form["tag2"],
+        }
+
+        db.jobs.insert_one(new_doc)
+        return redirect(url_for("job_post", msg="Lowongan Berhasil Dibuat"))
     token_receive = request.cookies.get(TOKEN_KEY)
     # token_receive = request.cookies.get("mytoken")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.company.find_one({"email": payload["id"]})
         if user_info:
-            return render_template("jobpost.html", user_info=user_info)
+            msg = request.args.get("msg")
+            return render_template("jobpost.html", user_info=user_info, msg=msg)
+        return redirect(url_for("sign_in"))
+
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
+
+
+@app.route("/company-info")
+def company_info():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.company.find_one({"email": payload["id"]})
+        if user_info:
+            return render_template("companyinfo.html", user_info=user_info)
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -59,23 +95,41 @@ def user_info():
 
 @app.route("/user-editFile", methods=["POST"])
 def user_editFile():
-    if "formFile" in request.files:
-        if request.form["realFile"]:
-            os.remove(f"./static/{request.form['realFile']}")
-    file = request.files.get("formFile")
-    folder_receive = request.form["folder"]
-    filename = secure_filename(file.filename)
-    extension = filename.split(".")[-1]
-    seconds = time.time()
-    file_path = f"{folder_receive}/{int(seconds)}.{extension}"
-    file.save("./static/" + file_path)
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if "formFile" in request.files:
+            if request.form["realFile"]:
+                os.remove(f"./static/{request.form['realFile']}")
+        file = request.files.get("formFile")
+        folder_receive = request.form["folder"]
+        filename = secure_filename(file.filename)
+        extension = filename.split(".")[-1]
+        seconds = time.time()
+        file_path = f"{folder_receive}/{int(seconds)}.{extension}"
+        file.save("./static/" + file_path)
 
-    new_doc = {f"{folder_receive}": file_path}
-    db.seeker.update_one(
-        {"uuid": request.form["uuid"]},
-        {"$set": new_doc},
-    )
-    return redirect(url_for("user_edit"))
+        new_doc = {f"{folder_receive}": file_path}
+        if payload["role"] == "pekerja":
+            db.seeker.update_one(
+                {"uuid": request.form["uuid"]},
+                {"$set": new_doc},
+            )
+            return redirect(url_for("user_edit"))
+        elif payload["role"] == "perusahaan":
+            db.company.update_one(
+                {"uuid": request.form["uuid"]},
+                {"$set": new_doc},
+            )
+            return redirect(url_for("company_edit"))
+
+        return redirect(url_for("sign_in"))
+
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
 
 
 @app.route("/download")
@@ -83,6 +137,56 @@ def download_file():
     theFile = request.args["path"]
     p = f"static/{theFile}"
     return send_file(p, as_attachment=True)
+
+
+@app.route("/company-edit", methods=["GET", "POST"])
+def company_edit():
+    if request.method == "POST":
+        uuid_receive = request.form["uuid"]
+        name_receive = request.form["name"]
+        email_receive = request.form["email"]
+        address_receive = request.form["address"]
+        sector_receive = request.form["sector"]
+        sosmed_1_receive = request.form["sosmed_1"]
+        sosmed_2_receive = request.form["sosmed_2"]
+        licensing_receive = request.form["licensing"]
+        description_receive = request.form["description"]
+
+        new_doc = {
+            "name": name_receive,
+            "email": email_receive,
+            "address": address_receive,
+            "sector": sector_receive,
+            "sosmed_1": sosmed_1_receive,
+            "sosmed_2": sosmed_2_receive,
+            "licensing": licensing_receive,
+            "description": description_receive,
+        }
+        db.company.update_one(
+            {"uuid": uuid_receive},
+            {"$set": new_doc},
+        )
+
+        return jsonify(
+            {
+                "result": "success",
+                "msg": "Edit Perusahaan Berhasil",
+            }
+        )
+
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.company.find_one({"email": payload["id"]})
+        if user_info:
+            return render_template("editProfileCompany.html", user_info=user_info)
+        return redirect(url_for("sign_in"))
+
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
 
 
 @app.route("/user-edit", methods=["GET", "POST"])
@@ -140,7 +244,7 @@ def user_job():
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
-        return redirect(url_for("sign_in", msg="There was problem logging you in"))    
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
 
 
 @app.route("/user-jobdetail")
@@ -190,15 +294,15 @@ def sign_in():
                     "msg": "Email atau password salah",
                 }
             )
-    
+
     token_receive = request.cookies.get(TOKEN_KEY)
     # token_receive = request.cookies.get("mytoken")
     if token_receive:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        if payload["role"] == "pekerja":            
+        if payload["role"] == "pekerja":
             return redirect(url_for("user_info"))
-        elif payload["role"] == "perusahaan":            
-           return redirect(url_for("job_post"))
+        elif payload["role"] == "perusahaan":
+            return redirect(url_for("job_post"))
     msg = request.args.get("msg")
     return render_template("signin.html", msg=msg)
 
@@ -266,6 +370,7 @@ def sign_up_company():
         "name": username_receive,
         "email": email_receive,  # id
         "password": password_hash,  # password
+        "address": "",
         "sector": "",
         "sosmed_1": "",
         "sosmed_2": "",

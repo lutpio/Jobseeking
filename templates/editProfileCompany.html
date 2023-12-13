@@ -15,6 +15,54 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css" />
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>    
+
+    <style>
+      
+      trix-toolbar [data-trix-button-group="file-tools"] {
+        display: none;
+      }
+      trix-toolbar [data-trix-attribute="code"] {
+        display: none;
+      }
+      trix-toolbar [data-trix-attribute="quote"] {
+        display: none;
+      }
+    </style>
+    <script>
+      function save() {
+        let uuid = $("#uuid").val();
+        let name = $("#name").val();
+        let email = $("#email").val();
+        let address = $("#address").val();
+        let sector = $("#sector").val();
+        let sosmed_1 = $("#sosmed_1").val();
+        let sosmed_2 = $("#sosmed_2").val();
+        let licensing = $("#licensing").val();
+        let description = $("#description").val();
+        $.ajax({
+          type: "POST",
+          url: "/company-edit",
+          data: {
+            uuid :uuid ,
+            name :name ,
+            email :email ,
+            address :address ,
+            sector :sector ,
+            sosmed_1 :sosmed_1 ,
+            sosmed_2 :sosmed_2 ,
+            licensing :licensing ,
+            description :description ,
+          },
+          success: function (response) {
+            alert(response.msg);
+            window.location.reload();
+          },
+        });
+      }
+    </script>
   </head>
 
   <body>
@@ -28,7 +76,12 @@
           <div class="container-fluid">
             <a class="navbar-brand" href="#">
               <img
+                {% if user_info.company_pic %}
+                src="static/{{ user_info.company_pic }}"
+                {% else %}
+                
                 src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+                {% endif %}
                 alt=""
                 width="30"
                 height="30"
@@ -133,58 +186,68 @@
           <article class="d-inline-flex" style="margin-top: 10px; width: 400px">
             <div id="deskripsi" style="width: 400px">
               <div class="mb-3" style="width: 350px">
-                <label for="exampleFormControlInput1" class="form-label"
+                <label for="name" class="form-label"
                   >Nama Perusahaan</label
                 >
+                <input type="hidden" id="uuid" value="{{ user_info.uuid }}" />
                 <input
-                  type="email"
+                  type="text"
                   class="form-control"
-                  value="{{company_info.username}}"
-                  id="exampleFormControlInput1"
+                  value="{{user_info.name}}"
+                  name="name"
+                  id="name"
                   placeholder=""
                 />
               </div>
               <div class="mb-3" style="width: 350px">
-                <label for="exampleFormControlInput1" class="form-label"
+                <label for="address" class="form-label"
                   >Lokasi Perusahaan</label
                 >
                 <input
-                  type="email"
+                  type="text"
                   class="form-control"
-                  id="exampleFormControlInput1"
+                  value="{{user_info.address}}"
+                  name="address"
+                  id="address"
                   placeholder=""
                 />
               </div>
               <div class="mb-3" style="width: 350px">
-                <label for="exampleFormControlInput1" class="form-label"
+                <label for="sector" class="form-label"
                   >Bidang Perusahaan</label
                 >
                 <input
-                  type="email"
+                  type="text"
                   class="form-control"
-                  id="exampleFormControlInput1"
+                  value="{{user_info.sector}}"
+                  name="sector"
+                  id="sector"
                   placeholder=""
                 />
               </div>
               <div class="mb-3" style="width: 350px">
-                <label for="exampleFormControlInput1" class="form-label"
+                <label for="licensing" class="form-label"
                   >Perizinan Perusahaan</label
                 >
                 <input
-                  type="email"
+                  type="text"
                   class="form-control"
-                  id="exampleFormControlInput1"
+                  id="licensing"
+                  value="{{user_info.licensing}}"
+                  name="licensing" 
                   placeholder=""
                 />
               </div>
               <div class="mb-3" style="width: 350px">
-                <label for="exampleFormControlInput1" class="form-label"
+                <label for="email" class="form-label"
                   >Kontak Perusahaan</label
                 >
                 <input
                   type="email"
                   class="form-control"
-                  id="exampleFormControlInput1"
+                  value="{{user_info.email}}"
+                  name="email" 
+                  id="email"
                   placeholder=""
                 />
               </div>
@@ -192,20 +255,14 @@
                 <label for="exampleFormControlInput1" class="form-label"
                   >Deskripsi Perusahaan</label
                 >
-                <div class="form-floating">
-                  <textarea
-                    class="form-control"
-                    placeholder="Leave a comment here"
-                    id="floatingTextarea2"
-                    style="height: 100px"
-                  ></textarea>
-                </div>
+                <input id="description" type="hidden" name="description" value="{{user_info.description}}" />
+                <trix-editor input="description"></trix-editor>
               </div>
               <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-3">
                 <button class="btn btn-primary me-md-2" type="button">
                   Cancel
                 </button>
-                <button class="btn btn-primary" type="button">Save</button>
+                <button class="btn btn-primary" type="button" onclick="save()">Save</button>
               </div>
             </div>
             <div id="Sosmed" style="width: 400px; margin-left: 100px">
@@ -213,24 +270,28 @@
                 <p style="width: 200px">Sosial Media</p>
                 <div class="d-inline-flex">
                   <div class="mb-3" style="width: 350px">
-                    <label for="exampleFormControlInput1" class="form-label"
+                    <label for="sosmed_1" class="form-label"
                       >Sosial Media 1</label
                     >
                     <input
-                      type="email"
+                      type="text"
                       class="form-control"
-                      id="exampleFormControlInput1"
+                      id="sosmed_1"
+                      value="{{user_info.sosmed_1}}"
+                      name="sosmed_1" 
                       placeholder=""
                     />
                   </div>
                   <div class="mb-3" style="width: 350px">
-                    <label for="exampleFormControlInput1" class="form-label"
+                    <label for="sosmed_2" class="form-label"
                       >Sosial Media 2</label
                     >
                     <input
-                      type="email"
+                      type="text"
                       class="form-control"
-                      id="exampleFormControlInput1"
+                      id="sosmed_2"
+                      value="{{user_info.sosmed_2}}"
+                      name="sosmed_2" 
                       placeholder=""
                     />
                   </div>
@@ -239,18 +300,68 @@
               <div>
                 <div style="margin-left: 0%; padding-top: 30px">
                   <img
+                    {% if user_info.company_pic %}
+                    src="static/{{ user_info.company_pic }}"
+                    {% else %}
+                    
                     src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+                    {% endif %}
                     alt=""
                     width="60"
                     height="60"
                     class="d-inline-block align-self-center"
                   />
                   <a
+                    href="#photoModal"
+                    data-bs-toggle="modal"
+                    data-bs-target="#photoModal"
                     class="btn btn-primary align-items-baseline"
-                    href="#"
-                    role="button"
                     >Ubah Foto</a
                   >
+                </div>
+              </div>
+            </div>
+            <div
+              class="modal fade"
+              id="photoModal"
+              tabindex="-1"
+              aria-labelledby="photoModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="/user-editFile" method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="photoModalLabel">Foto</h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label for="formFile" class="form-label">File Foto</label>
+                        <input class="form-control" type="file" name="formFile" id="formFile" />
+                        <input type="hidden" name="folder" value="company_pic" />
+                        <input type="hidden" name="uuid" value="{{ user_info.uuid }}" />
+                        <input type="hidden" name="realFile" value="{{ user_info.company_pic }}" />
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <a
+                        href="/download?path={{ user_info.profile_pic }}"
+                        class="btn btn-outline-secondary me-auto"
+                      >
+                        Download
+                      </a>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                      </button>
+                      <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -258,5 +369,10 @@
         </main>
       </div>
     </nav>
+    <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"
+  ></script>
   </body>
 </html>
