@@ -25,7 +25,7 @@
         <a class="navbar-brand" href="#">KERJA.DONG</a>
         <nav class="navbar navbar-light bg-light justify-content-end">
           <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/user-info">
               <img
               {% if user_info.profile_pic %}
               src="static/{{ user_info.profile_pic }}"
@@ -34,6 +34,7 @@
               src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
               {% endif %}
                 alt=""
+                
                 width="30"
                 height="30"
                 class="d-inline-block align-text-top"

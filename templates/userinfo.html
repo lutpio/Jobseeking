@@ -241,7 +241,12 @@
             <div class="row">
               <div class="col-md-2">
                 <img
-                  src="profile-picture.jpg"
+                  {% if user_info.profile_pic %}
+                  src="static/{{ user_info.profile_pic }}"
+                  {% else %}
+                  
+                  src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+                  {% endif %}
                   alt="Profile Picture"
                   class="img-fluid rounded-circle"
                 />
@@ -269,7 +274,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end align-items-end">
-                  <button class="btn btn-primary">Edit</button>
+                  <a href="/user-edit" class="btn btn-primary">Edit</a>
                 </div>
               </div>
             </div>
@@ -278,14 +283,15 @@
           <div class="container">
             <h2>Deskripsi Diri</h2>
             <p>
-              Disini tempat untuk tampilan deskripsi diri dari user yang ada.
+              {{ user_info.description if user_info.description else
+                'Disini tempat untuk tampilan deskripsi diri dari user yang ada.' }}              
             </p>
           </div>
 
           <div class="container">
             <h2>Kualifikasi</h2>
-            <a>CV</a>
-            <a>Sertifikasi</a>
+            <a href="/download?path={{ user_info.cv }}">CV</a>
+            <a href="/download?path={{ user_info.certification }}">Sertifikasi</a>
           </div>
 
           <div class="container">
