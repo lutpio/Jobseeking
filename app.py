@@ -1,9 +1,11 @@
+import os
 from pymongo import MongoClient
 import jwt
 from datetime import datetime, timedelta
+import time
 import hashlib
 import uuid
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, send_file, render_template, jsonify, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -28,7 +30,10 @@ def job_post():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.company.find_one({"email": payload["id"]})
-        return render_template("jobpost.html", user_info=user_info)
+        if user_info:
+            return render_template("jobpost.html", user_info=user_info)
+        return redirect(url_for("sign_in"))
+
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
@@ -42,21 +47,79 @@ def user_info():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
-        return render_template("userinfo.html", user_info=user_info)
+        if user_info:
+            return render_template("userinfo.html", user_info=user_info)
+        return redirect(url_for("sign_in"))
+
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("sign_in", msg="There was problem logging you in"))
 
 
-@app.route("/user-edit")
+@app.route("/user-editFile", methods=["POST"])
+def user_editFile():
+    if "formFile" in request.files:
+        if request.form["realFile"]:
+            os.remove(f"./static/{request.form['realFile']}")
+    file = request.files.get("formFile")
+    folder_receive = request.form["folder"]
+    filename = secure_filename(file.filename)
+    extension = filename.split(".")[-1]
+    seconds = time.time()
+    file_path = f"{folder_receive}/{int(seconds)}.{extension}"
+    file.save("./static/" + file_path)
+
+    new_doc = {f"{folder_receive}": file_path}
+    db.seeker.update_one(
+        {"uuid": request.form["uuid"]},
+        {"$set": new_doc},
+    )
+    return redirect(url_for("user_edit"))
+
+
+@app.route("/download")
+def download_file():
+    theFile = request.args["path"]
+    p = f"static/{theFile}"
+    return send_file(p, as_attachment=True)
+
+
+@app.route("/user-edit", methods=["GET", "POST"])
 def user_edit():
+    if request.method == "POST":
+        uuid_receive = request.form["uuid"]
+        username_receive = request.form["username"]
+        sex_receive = request.form["sex"]
+        address_receive = request.form["address"]
+        university_receive = request.form["university"]
+        department_receive = request.form["department"]
+        entry_year_receive = request.form["entry_year"]
+        description_receive = request.form["description"]
+
+        new_doc = {
+            "username": username_receive,
+            "sex": sex_receive,
+            "address": address_receive,
+            "university": university_receive,
+            "department": department_receive,
+            "entry_year": entry_year_receive,
+            "description": description_receive,
+        }
+        db.seeker.update_one(
+            {"uuid": uuid_receive},
+            {"$set": new_doc},
+        )
+
     token_receive = request.cookies.get(TOKEN_KEY)
     # token_receive = request.cookies.get("mytoken")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
-        return render_template("editProfile.html", user_info=user_info)
+        if user_info:
+            return render_template("editProfile.html", user_info=user_info)
+        return redirect(url_for("sign_in"))
+
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
@@ -65,7 +128,19 @@ def user_edit():
 
 @app.route("/user-job")
 def user_job():
-    return render_template("userjob.html")
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.seeker.find_one({"email": payload["id"]})
+        if user_info:
+            return render_template("userjob.html", user_info=user_info)
+        return redirect(url_for("sign_in"))
+
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))    
 
 
 @app.route("/user-jobdetail")
@@ -100,6 +175,7 @@ def sign_in():
         if result:
             payload = {
                 "id": email_receive,
+                "role": role,
                 # the token will be valid for 24 hours
                 "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),
             }
@@ -114,6 +190,15 @@ def sign_in():
                     "msg": "Email atau password salah",
                 }
             )
+    
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    if token_receive:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if payload["role"] == "pekerja":            
+            return redirect(url_for("user_info"))
+        elif payload["role"] == "perusahaan":            
+           return redirect(url_for("job_post"))
     msg = request.args.get("msg")
     return render_template("signin.html", msg=msg)
 

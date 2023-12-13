@@ -15,21 +15,26 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
 
   <body>
-    <header
-      class="navbar navbar-expand-lg navbar-light bg-light"
-      style="padding-bottom: 0px"
-    >
+    <header class="navbar navbar-expand-lg navbar-light bg-light" style="padding-bottom: 0px">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">KERJA.DONG</a>
         <nav class="navbar navbar-light bg-light justify-content-end">
           <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/user-info">
               <img
-                src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+              {% if user_info.profile_pic %}
+              src="static/{{ user_info.profile_pic }}"
+              {% else %}
+              
+              src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+              {% endif %}
                 alt=""
+                
                 width="30"
                 height="30"
                 class="d-inline-block align-text-top"
@@ -47,10 +52,7 @@
         class="d-inline-flex position-sticky"
         style="display: inline-block; align-items: baseline"
       >
-        <nav
-          class="col-8"
-          style="width: 150px; height: 500px; display: inline-block"
-        >
+        <nav class="col-8" style="width: 150px; height: 500px; display: inline-block">
           <span>
             <ul class="list-unstyled ps-0">
               <li class="mb-1">
@@ -123,134 +125,271 @@
       >
         <main class="row">
           <article>
-            <main
-              class="col-9"
-              style="display: inline-block; align-self: baseline"
-            >
+            <main class="col-9" style="display: inline-block; align-self: baseline">
               <h4>Edit Profile</h4>
             </main>
           </article>
           <article class="d-inline-flex" style="margin-top: 10px; width: 400px">
             <div id="deskripsi" style="width: 400px">
-              <div class="mb-3" style="width: 350px">
-                <label for="exampleFormControlInput1" class="form-label"
-                  >Nama Lengkap</label
-                >
-                <input
-                  type="email"
-                  class="form-control"
-                  value="{{user_info.username}}"
-                  id="exampleFormControlInput1"
-                  placeholder=""
-                />
-              </div>
-              <div class="mb-3">
-                <p style="margin-bottom: 6px">Jenis Kelamin</p>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio"
-                  name="inlineRadioOptions" id="inlineRadio1" value="Laki-Laki"
-                  {% if user_info.sex == 'Laki-laki' %} checked {% endif %} />
-                  <label class="form-check-label" for="inlineRadio1"
-                    >Laki-Laki</label
-                  >
+              <form action="/user-edit" method="POST">
+                <div class="mb-3" style="width: 350px">
+                  <label for="username" class="form-label">Nama Lengkap</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    value="{{user_info.username}}"
+                    id="username"
+                    name="username"
+                    placeholder=""
+                  />
+                  <input type="hidden" name="uuid" value="{{user_info.uuid}}" />
                 </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio"
-                  name="inlineRadioOptions" id="inlineRadio2" value="Perempuan"
-                  {% if user_info.sex == 'Perempuan' %} checked {% endif %} />
-                  <label class="form-check-label" for="inlineRadio2"
-                    >Perempuan</label
-                  >
+                <div class="mb-3">
+                  <p style="margin-bottom: 6px">Jenis Kelamin</p>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="sex" id="inlineRadio1"
+                    value="Laki-Laki" {% if user_info.sex == 'Laki-Laki' %} checked {% endif %} />
+                    <label class="form-check-label" for="inlineRadio1">Laki-Laki</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="sex" id="inlineRadio2"
+                    value="Perempuan" {% if user_info.sex == 'Perempuan' %} checked {% endif %} />
+                    <label class="form-check-label" for="inlineRadio2">Perempuan</label>
+                  </div>
                 </div>
-              </div>
 
-              <div class="mb-3" style="width: 350px">
-                <label for="exampleFormControlInput1" class="form-label"
-                  >Alamat Domisili</label
-                >
-                <input
-                  type="email"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder=""
-                />
-              </div>
-              <div class="mb-3" style="width: 350px">
-                <label for="exampleFormControlInput1" class="form-label"
-                  >Asal Universitas</label
-                >
-                <input
-                  type="email"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder=""
-                />
-              </div>
-              <div class="mb-3" style="width: 350px">
-                <label for="exampleFormControlInput1" class="form-label"
-                  >Jurusan</label
-                >
-                <input
-                  type="email"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder=""
-                />
-              </div>
-              <div class="mb-3" style="width: 350px">
-                <label for="exampleFormControlInput1" class="form-label"
-                  >Tahun Masuk</label
-                >
-                <input
-                  type="email"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder=""
-                />
-              </div>
-              <div>
-                <label for="exampleFormControlInput1" class="form-label"
-                  >Deskripsi Diri</label
-                >
-                <div class="form-floating">
+                <div class="mb-3" style="width: 350px">
+                  <label for="address" class="form-label">Alamat Domisili</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="address"
+                    name="address"
+                    value="{{user_info.address}}"
+                    placeholder=""
+                  />
+                </div>
+                <div class="mb-3" style="width: 350px">
+                  <label for="university" class="form-label">Asal Universitas</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="university"
+                    value="{{user_info.university}}"
+                    name="university"
+                    placeholder=""
+                  />
+                </div>
+                <div class="mb-3" style="width: 350px">
+                  <label for="department" class="form-label">Jurusan</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder=""
+                    value="{{user_info.department}}"
+                    id="department"
+                    name="department"
+                  />
+                </div>
+                <div class="mb-3" style="width: 350px">
+                  <label for="entry_year" class="form-label">Tahun Masuk</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    value="{{user_info.entry_year}}"
+                    id="entry_year"
+                    name="entry_year"
+                    placeholder=""
+                  />
+                </div>
+                <div>
+                  <label for="description" class="form-label">Deskripsi Diri</label>
                   <textarea
                     class="form-control"
                     placeholder="Leave a comment here"
-                    id="floatingTextarea2"
+                    id="description"
+                    name="description"
                     style="height: 100px"
-                  ></textarea>
+                  >
+{{user_info.description}}</textarea
+                  >
                 </div>
-              </div>
-              <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-3">
-                <button class="btn btn-primary me-md-2" type="button">
-                  Cancel
-                </button>
-                <button class="btn btn-primary" type="button">Save</button>
-              </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-3">
+                  <button class="btn btn-primary me-md-2" type="button">Cancel</button>
+                  <button class="btn btn-primary" type="submit">Save</button>
+                </div>
+              </form>
             </div>
             <div id="Sertifikasi" style="width: 400px; margin-left: 100px">
               <div>
                 <p style="width: 200px">Tambah Sertifikasi</p>
                 <div class="d-inline-flex">
-                  <a href="">CV</a>
-                  <a style="padding-left: 30px" href="">Sertifikasi</a>
+                  <a href="#cvModal" data-bs-toggle="modal" data-bs-target="#cvModal">CV</a>
+                  <a
+                    style="padding-left: 30px"
+                    href="#SertifikasiModal"
+                    data-bs-toggle="modal"
+                    data-bs-target="#SertifikasiModal"
+                    >Sertifikasi</a
+                  >
                 </div>
               </div>
               <div>
                 <div style="margin-left: 0%; padding-top: 30px">
                   <img
-                    src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+                  {% if user_info.profile_pic %}
+                  src="static/{{ user_info.profile_pic }}"
+                  {% else %}
+                  
+                  src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+                  {% endif %}
                     alt=""
                     width="60"
                     height="60"
                     class="d-inline-block align-self-center"
                   />
                   <a
+                    href="#photoModal"
+                    data-bs-toggle="modal"
+                    data-bs-target="#photoModal"
                     class="btn btn-primary align-items-baseline"
-                    href="#"
-                    role="button"
                     >Ubah Foto</a
                   >
+                </div>
+              </div>
+            </div>
+            <div
+              class="modal fade"
+              id="photoModal"
+              tabindex="-1"
+              aria-labelledby="photoModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="/user-editFile" method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="photoModalLabel">Foto</h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label for="formFile" class="form-label">File Foto</label>
+                        <input class="form-control" type="file" name="formFile" id="formFile" />
+                        <input type="hidden" name="folder" value="profile_pic" />
+                        <input type="hidden" name="uuid" value="{{ user_info.uuid }}" />
+                        <input type="hidden" name="realFile" value="{{ user_info.profile_pic }}" />
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <a
+                        href="/download?path={{ user_info.profile_pic }}"
+                        class="btn btn-outline-secondary me-auto"
+                      >
+                        Download
+                      </a>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                      </button>
+                      <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div
+              class="modal fade"
+              id="cvModal"
+              tabindex="-1"
+              aria-labelledby="cvModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="/user-editFile" method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="cvModalLabel">CV</h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label for="formFile" class="form-label">File CV</label>
+                        <input class="form-control" type="file" name="formFile" id="formFile" />
+                        <input type="hidden" name="folder" value="cv" />
+                        <input type="hidden" name="uuid" value="{{ user_info.uuid }}" />
+                        <input type="hidden" name="realFile" value="{{ user_info.cv }}" />
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <a
+                        href="/download?path={{ user_info.cv }}"
+                        class="btn btn-outline-secondary me-auto"
+                      >
+                        Download
+                      </a>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                      </button>
+                      <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div
+              class="modal fade"
+              id="SertifikasiModal"
+              tabindex="-1"
+              aria-labelledby="SertifikasiModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="/user-editFile" method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="SertifikasiModalLabel">Sertifikasi</h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label for="formFile" class="form-label">File Sertifikasi</label>
+                        <input class="form-control" type="file" name="formFile" id="formFile" />
+                        <input type="hidden" name="folder" value="certification" />
+                        <input type="hidden" name="uuid" value="{{ user_info.uuid }}" />
+                        <input
+                          type="hidden"
+                          name="realFile"
+                          value="{{ user_info.certification }}"
+                        />
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <a
+                        href="/download?path={{ user_info.certification  }}"
+                        class="btn btn-outline-secondary me-auto"
+                        >Download</a
+                      >
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                      </button>
+                      <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -258,5 +397,10 @@
         </main>
       </div>
     </nav>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
