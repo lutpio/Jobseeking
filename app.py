@@ -30,7 +30,10 @@ def job_post():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.company.find_one({"email": payload["id"]})
-        return render_template("jobpost.html", user_info=user_info)
+        if user_info:
+            return render_template("jobpost.html", user_info=user_info)
+        return redirect(url_for("sign_in"))
+
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
@@ -44,7 +47,10 @@ def user_info():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
-        return render_template("userinfo.html", user_info=user_info)
+        if user_info:
+            return render_template("userinfo.html", user_info=user_info)
+        return redirect(url_for("sign_in"))
+
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
@@ -110,7 +116,10 @@ def user_edit():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
-        return render_template("editProfile.html", user_info=user_info)
+        if user_info:
+            return render_template("editProfile.html", user_info=user_info)
+        return redirect(url_for("sign_in"))
+
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
@@ -119,7 +128,19 @@ def user_edit():
 
 @app.route("/user-job")
 def user_job():
-    return render_template("userjob.html")
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.seeker.find_one({"email": payload["id"]})
+        if user_info:
+            return render_template("userjob.html", user_info=user_info)
+        return redirect(url_for("sign_in"))
+
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))    
 
 
 @app.route("/user-jobdetail")
@@ -154,6 +175,7 @@ def sign_in():
         if result:
             payload = {
                 "id": email_receive,
+                "role": role,
                 # the token will be valid for 24 hours
                 "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),
             }
@@ -168,6 +190,15 @@ def sign_in():
                     "msg": "Email atau password salah",
                 }
             )
+    
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    if token_receive:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if payload["role"] == "pekerja":            
+            return redirect(url_for("user_info"))
+        elif payload["role"] == "perusahaan":            
+           return redirect(url_for("job_post"))
     msg = request.args.get("msg")
     return render_template("signin.html", msg=msg)
 
