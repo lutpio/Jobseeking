@@ -69,7 +69,7 @@ def user_editFile():
         {"uuid": request.form["uuid"]},
         {"$set": new_doc},
     )
-    return jsonify({"result": "success", "msg": "Your profile has been updated"})
+    return redirect(url_for("user_edit"))
 
 
 @app.route("/download")
