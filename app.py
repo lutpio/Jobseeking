@@ -1,9 +1,11 @@
+import os
 from pymongo import MongoClient
 import jwt
 from datetime import datetime, timedelta
+import time
 import hashlib
 import uuid
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, send_file, render_template, jsonify, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -49,8 +51,60 @@ def user_info():
         return redirect(url_for("sign_in", msg="There was problem logging you in"))
 
 
-@app.route("/user-edit")
+@app.route("/user-editFile", methods=["POST"])
+def user_editFile():
+    if "formFile" in request.files:
+        if request.form["realFile"]:
+            os.remove(f"./static/{request.form['realFile']}")
+    file = request.files.get("formFile")
+    folder_receive = request.form["folder"]
+    filename = secure_filename(file.filename)
+    extension = filename.split(".")[-1]
+    seconds = time.time()
+    file_path = f"{folder_receive}/{int(seconds)}.{extension}"
+    file.save("./static/" + file_path)
+
+    new_doc = {f"{folder_receive}": file_path}
+    db.seeker.update_one(
+        {"uuid": request.form["uuid"]},
+        {"$set": new_doc},
+    )
+    return jsonify({"result": "success", "msg": "Your profile has been updated"})
+
+
+@app.route("/download")
+def download_file():
+    theFile = request.args["path"]
+    p = f"static/{theFile}"
+    return send_file(p, as_attachment=True)
+
+
+@app.route("/user-edit", methods=["GET", "POST"])
 def user_edit():
+    if request.method == "POST":
+        uuid_receive = request.form["uuid"]
+        username_receive = request.form["username"]
+        sex_receive = request.form["sex"]
+        address_receive = request.form["address"]
+        university_receive = request.form["university"]
+        department_receive = request.form["department"]
+        entry_year_receive = request.form["entry_year"]
+        description_receive = request.form["description"]
+
+        new_doc = {
+            "username": username_receive,
+            "sex": sex_receive,
+            "address": address_receive,
+            "university": university_receive,
+            "department": department_receive,
+            "entry_year": entry_year_receive,
+            "description": description_receive,
+        }
+        db.seeker.update_one(
+            {"uuid": uuid_receive},
+            {"$set": new_doc},
+        )
+
     token_receive = request.cookies.get(TOKEN_KEY)
     # token_receive = request.cookies.get("mytoken")
     try:
