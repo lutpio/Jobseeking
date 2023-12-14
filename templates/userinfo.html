@@ -336,13 +336,13 @@
 
           <div class="container">
             <h2>Lamaran Anda</h2>
-            <p>Posisi Magang</p>
-            <p>Tempat Gaji Rp. - Rp.</p>
-            <p>Deskripsi</p>
-            <span class="badge rounded-pill bg-primary">Tag 1</span>
-            <span class="badge rounded-pill bg-primary">Tag 2</span>
+            <p>{{jobs.position}}</p>
+            <p>{{ jobs.address }} Gaji Rp.{{ jobs.wage_min }} - Rp.{{ jobs.wage_max }}</p>
+            <div>{{ jobs.description | safe }}</div>
+            <span class="badge rounded-pill bg-primary">{{ jobs.tag1 }}</span>
+            <span class="badge rounded-pill bg-primary">{{ jobs.tag2 }}</span>
             <div class="d-flex justify-content-end align-items-end">
-              <button class="btn btn-primary">Lihat Semua</button>
+              <a href="/user-job?limit=2&offset=0" class="btn btn-primary">Lihat Semua</a>
             </div>
           </div>
         </main>

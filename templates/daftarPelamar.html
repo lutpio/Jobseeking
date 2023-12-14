@@ -10,6 +10,44 @@
     <script src="/docs/5.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            show_pelamar("all");
+        });
+        function show_pelamar(value){
+            $('#list-pelamar').empty()
+            $.ajax({
+                type: "GET",
+                url: `/pelamar?status=${value}&job={{ jobs.uuid }}`,
+                data: {},
+                success: function (response) {
+                    let rows =response['pelamar_list']
+                    for(let i = 0; i < rows.length; i++){
+                        let name = rows[i]['seeker']                                                                      
+                        $.ajax({
+                            type: 'GET',
+                            url: `/get_name?seeker=${name}`,  
+                            data: { seeker: name },
+                            success: function(response) {
+                                real_name = response['name']
+                                let temp_html = `
+                                <div
+                                    class="row my-1 p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 align-items-center rounded-3 shadow">
+                                    <p><a href="" class="link-dark">${real_name}</a></p>
+                                    <input class="btn btn-primary ms-3" type="button" value="Diterima"
+                                        style="width: min-content;">
+                                </div>
+                                `                        
+                                $('#list-pelamar').append(temp_html)
+                            },                            
+                        });
+                    }
+                }
+            });
+        }
+    </script>
 </head>
 
 <body>
@@ -79,55 +117,39 @@
                             <h4>Pendaftar</h4>
                             <div class="row p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 align-items-center rounded-3 shadow-lg">
                                 <h4>Pekerjaan</h4>
-                                <h3>Posisi Magang A</h3>
+                                <h3>{{jobs.position}}</h3>
                             </div>
                             <div class="radio-button"
                                 style="margin-top: 20px; margin-bottom: 20px; width: max-content;">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
-                                        id="inlineRadio1" value="option1">
-                                    <label class="form-check-label" for="inlineRadio1">Semua Pendaftar</label>
+                                    <input class="form-check-input" type="radio" name="status"
+                                        id="all" onc>
+                                    <label class="form-check-label" for="all">Semua Pendaftar</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
-                                        id="inlineRadio2" value="option2">
-                                    <label class="form-check-label" for="inlineRadio2">Ditolak</label>
+                                    <input class="form-check-input" type="radio" name="status"
+                                        id="ditolak" >
+                                    <label class="form-check-label" for="ditolak">Ditolak</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
-                                        id="inlineRadio1" value="option1">
-                                    <label class="form-check-label" for="inlineRadio1">Wawancara</label>
+                                    <input class="form-check-input" type="radio" name="status"
+                                        id="wawancara" >
+                                    <label class="form-check-label" for="wawancara">Wawancara</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
-                                        id="inlineRadio2" value="option2">
-                                    <label class="form-check-label" for="inlineRadio2">Pending</label>
+                                    <input class="form-check-input" type="radio" name="status"
+                                        id="pending" >
+                                    <label class="form-check-label" for="pending">Pending</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
-                                        id="inlineRadio2" value="option2">
-                                    <label class="form-check-label" for="inlineRadio2">Diterima</label>
+                                    <input class="form-check-input" type="radio" name="status"
+                                        id="diterima" >
+                                    <label class="form-check-label" for="diterima">Diterima</label>
                                 </div>
                             </div>
-                            <div class="table list-lowongan">
-                                <div
-                                    class="row my-1 p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 align-items-center rounded-3 shadow">
-                                    <p><a href="" class="link-dark">Pendaftar A</a></p>
-                                    <input class="btn btn-primary ms-3" type="button" value="Diterima"
-                                        style="width: min-content;">
-                                </div>
-                                <div
-                                    class="row my-2 p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 align-items-center rounded-3 shadow">
-                                    <p><a href="" class="link-dark">Pendaftar B</a></p>
-                                    <input class="btn btn-primary ms-3" type="button" value="Diterima"
-                                        style="width: min-content;">
-                                </div>
-                                <div
-                                    class="row my-3 p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 align-items-center rounded-3 shadow">
-                                    <p><a href="#" class="link-dark">Pendaftar C</a></p>
-                                    <input class="btn btn-primary ms-3" type="button" value="Diterima"
-                                        style="width: min-content;">
-                                </div>
+                            <div class="table list-lowongan" id="list-pelamar">
+                                
+                                
                             </div>
                         </main>
                     </article>

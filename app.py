@@ -28,7 +28,6 @@ def index():
 def job_edit(uuid):
     if request.method == "POST":
         new_doc = {
-            "company": request.form["uuid"],
             "position": request.form["position"],
             "description": request.form["description"],
             "province": request.form["prov"],
@@ -40,18 +39,23 @@ def job_edit(uuid):
             "department": request.form["department"],
             "tag1": request.form["tag1"],
             "tag2": request.form["tag2"],
+            "date": time.time(),
+            "status": request.form["status"],
         }
 
-        db.jobs.insert_one(new_doc)
-        return redirect(url_for("job_post", msg="Lowongan Berhasil Dibuat"))
+        db.jobs.update_one({"uuid": uuid}, {"$set": new_doc})
+        return redirect(f"/job-edit/{uuid}?msg=Lowongan+Berhasil+Diedit")
     token_receive = request.cookies.get(TOKEN_KEY)
     # token_receive = request.cookies.get("mytoken")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.company.find_one({"email": payload["id"]})
         if user_info:
+            thejob = db.jobs.find_one({"uuid": uuid})
             msg = request.args.get("msg")
-            return render_template("jobpost.html", user_info=user_info, msg=msg)
+            return render_template(
+                "jobedit.html", user_info=user_info, job=thejob, msg=msg
+            )
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -78,6 +82,8 @@ def job_post():
             "tag1": request.form["tag1"],
             "tag2": request.form["tag2"],
             "date": time.time(),
+            "status": "active",
+            "approve": "no",
         }
 
         db.jobs.insert_one(new_doc)
@@ -98,6 +104,45 @@ def job_post():
         return redirect(url_for("sign_in", msg="There was problem logging you in"))
 
 
+@app.route("/pelamar", methods=["GET"])
+def pelamar_get():
+    status = request.args["status"]
+    job = request.args["job"]
+    if status == "all":
+        pelamar_list = list(
+            db.applicant.find({"job": job}, {"_id": False}).sort("_id", -1)
+        )
+    else:
+        pelamar_list = list(
+            db.applicant.find({"status": status, "job": job}, {"_id": False}).sort(
+                "_id", -1
+            )
+        )
+    return jsonify({"pelamar_list": pelamar_list})
+
+
+@app.route("/get_name", methods=["GET"])
+def get_name():
+    seeker_id = request.args["seeker"]
+    name = db.seeker.find_one({"uuid": seeker_id}, {"_id": False})
+
+    return jsonify({"name": name["username"]})
+
+
+@app.template_filter()
+def format_province(value):
+    url = f"https://emsifa.github.io/api-wilayah-indonesia/api/province/{value}.json"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an HTTPError if the HTTP request returned an unsuccessful status code
+
+        data = response.json()
+        return data["name"]
+
+    except requests.exceptions.RequestException as e:
+        return "Error"
+
+
 @app.template_filter()
 def format_regency(value):
     url = f"https://emsifa.github.io/api-wilayah-indonesia/api/regency/{value}.json"
@@ -116,6 +161,25 @@ def format_regency(value):
 def format_datetime(value):
     dt_object = datetime.fromtimestamp(value)
     return f"{dt_object.day}/{dt_object.month}/{dt_object.year}"
+
+
+@app.route("/seeker-job/<uuid>")
+def seeker_job(uuid):
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.company.find_one({"email": payload["id"]})
+        if user_info:
+            jobs = db.jobs.find_one({"uuid": uuid})
+
+            return render_template("daftarpelamar.html", user_info=user_info, jobs=jobs)
+        return redirect(url_for("sign_in"))
+
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
 
 
 @app.route("/company-job/<uuid>")
@@ -178,34 +242,27 @@ def search_job():
                 cari["province"] = f"{request.args['prov']}"
             if request.args["kot"]:
                 cari["regency"] = f"{request.args['kot']}"
-            if request.args["tag1"]:
-                # cari["tag1"] = f"{request.args['tag1']}"
 
-                # if request.args["tag2"]:
-                cari["'$or'"] = [
+            if request.args["tag1"]:
+                cari["$or"] = [
                     {"tag1": request.args["tag1"]},
                     {"tag2": request.args["tag1"]},
+                ]
+            if request.args["tag2"]:
+                cari["$or"] = [
+                    {"tag1": request.args["tag2"]},
+                    {"tag2": request.args["tag2"]},
+                ]
+            if request.args["tag2"] and request.args["tag1"]:
+                cari["$or"] = [
+                    {"tag1": {"$in": [request.args["tag2"], request.args["tag1"]]}},
+                    {"tag2": {"$in": [request.args["tag2"], request.args["tag1"]]}},
                 ]
 
             thelist = (
                 db.jobs.find(
                     cari,
                     {"_id": False},
-                    # {
-                    #     "_id": {"$lte": last_id},
-                    #     # "position": {
-                    #     #     "$regex": f"{request.args['query']}",
-                    #     #     "$options": "i",
-                    #     # },
-                    #     # "province": request.args["prov"],
-                    #     # "regency": request.args["kot"],
-                    #     # "$or": [
-                    #     #     {"tag1": {"$regex": request.args["tag1"]}},
-                    #     #     {"tag2": {"$regex": request.args["tag1"]}},
-                    #     #     {"tag1": {"$regex": request.args["tag2"]}},
-                    #     #     {"tag2": {"$regex": request.args["tag2"]}},
-                    #     # ],
-                    # },
                 )
                 .sort("_id", -1)
                 .limit(limit)
@@ -229,7 +286,7 @@ def search_job():
                 + "&tag1="
                 + request.args["tag1"]
                 + "&tag2="
-                + request.args["tag1"]
+                + request.args["tag2"]
             )
             prev_url = (
                 "search-job?limit="
@@ -245,7 +302,7 @@ def search_job():
                 + "&tag1="
                 + request.args["tag1"]
                 + "&tag2="
-                + request.args["tag1"]
+                + request.args["tag2"]
             )
             # return jsonify(
             #     {"result": output, "prev_url": prev_url, "next_url": next_url}
@@ -265,6 +322,74 @@ def search_job():
                 prev_url=prev_url,
                 next_url=next_url,
                 query=query,
+                msg=msg,
+            )
+        return redirect(url_for("sign_in"))
+
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
+
+
+@app.route("/admin-job")
+def admin_job():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.admin.find_one({"email": payload["id"]})
+        if user_info:
+            offset = int(request.args["offset"])
+            limit = int(request.args["limit"])
+            starting_id = db.jobs.find({"approve": "no"}).sort("_id", -1)
+            if db.jobs.count_documents({"approve": "no"}) == 0:
+                # pindahkan ketempat lain
+                return jsonify(
+                    {
+                        "result": "success",
+                        "msg": "user_info",
+                    }
+                )
+            try:
+                last_id = starting_id[offset]["_id"]
+            except IndexError:
+                return redirect(
+                    url_for(
+                        "admin_job",
+                        limit=str(limit),
+                        offset=str(offset - limit),
+                        msg="Lowongan Hanya Sampai Sini",
+                    )
+                )
+
+            thelist = (
+                db.jobs.find(
+                    {"_id": {"$lte": last_id}, "approve": "no"},
+                    {"_id": False},
+                )
+                .sort("_id", -1)
+                .limit(limit)
+            )
+
+            output = []
+            for i in thelist:
+                output.append(i)
+
+            next_url = (
+                "admin-job?limit=" + str(limit) + "&offset=" + str(offset + limit)
+            )
+            prev_url = (
+                "admin-job?limit=" + str(limit) + "&offset=" + str(offset - limit)
+            )
+
+            msg = request.args.get("msg")
+            return render_template(
+                "adminjob.html",
+                user_info=user_info,
+                output=output,
+                prev_url=prev_url,
+                next_url=next_url,
                 msg=msg,
             )
         return redirect(url_for("sign_in"))
@@ -317,15 +442,7 @@ def company_job():
             prev_url = (
                 "company-job?limit=" + str(limit) + "&offset=" + str(offset - limit)
             )
-            # return jsonify(
-            #     {"result": output, "prev_url": prev_url, "next_url": next_url}
-            # )
-            # return jsonify(
-            #     {
-            #         "result": "success",
-            #         "msg": user_info,
-            #     }
-            # )
+
             msg = request.args.get("msg")
             return render_template(
                 "companyjob.html",
@@ -375,7 +492,9 @@ def user_info():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
         if user_info:
-            return render_template("userinfo.html", user_info=user_info)
+            lowongan = db.applicant.find_one({"seeker": user_info["uuid"]})
+            job = db.jobs.find_one({"uuid": lowongan["job"]})
+            return render_template("userinfo.html", user_info=user_info, jobs=job)
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -529,7 +648,52 @@ def user_job():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
         if user_info:
-            return render_template("userjob.html", user_info=user_info)
+            offset = int(request.args["offset"])
+            limit = int(request.args["limit"])
+            starting_id = db.applicant.find({"seeker": user_info["uuid"]}).sort(
+                "_id", -1
+            )
+            jobku = []
+            for i in starting_id:
+                jobku.append(i["job"])
+
+            starting_id2 = db.jobs.find().sort("_id", -1)
+            try:
+                last_id = starting_id2[offset]["_id"]
+            except IndexError:
+                return redirect(
+                    url_for(
+                        "user_job",
+                        limit=str(limit),
+                        offset=str(offset - limit),
+                        msg="Lowongan Hanya Sampai Sini",
+                    )
+                )
+
+            thelist = (
+                db.jobs.find(
+                    {"_id": {"$lte": last_id}, "uuid": {"$in": jobku}},
+                    {"_id": False},
+                )
+                .sort("_id", -1)
+                .limit(limit)
+            )
+
+            output = []
+            for i in thelist:
+                output.append(i)
+
+            next_url = "user-job?limit=" + str(limit) + "&offset=" + str(offset + limit)
+            prev_url = "user-job?limit=" + str(limit) + "&offset=" + str(offset - limit)
+            msg = request.args.get("msg")
+            return render_template(
+                "userjob.html",
+                user_info=user_info,
+                output=output,
+                msg=msg,
+                next_url=next_url,
+                prev_url=prev_url,
+            )
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -538,9 +702,70 @@ def user_job():
         return redirect(url_for("sign_in", msg="There was problem logging you in"))
 
 
-@app.route("/user-jobdetail")
-def user_jobdetail():
-    return render_template("userjobdetail.html")
+@app.route("/admin-job/<uuid2>", methods=["GET", "POST"])
+def admin_jobdetail(uuid2):
+    if request.method == "POST":
+        new_doc = {
+            "approve": request.form["approve_give"],
+        }
+        db.jobs.update_one({"uuid": uuid2}, {"$set": new_doc})
+        return jsonify(
+            {
+                "result": "success",
+                "msg": "Pilih role dengan benar",
+            }
+        )
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.admin.find_one({"email": payload["id"]})
+        if user_info:
+            jobs2 = db.jobs.find_one({"uuid": uuid2})
+            return render_template(
+                "adminjobdetail.html", user_info=user_info, jobs=jobs2
+            )
+        return redirect(url_for("sign_in"))
+
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
+
+
+@app.route("/user-job/<uuid2>", methods=["GET", "POST"])
+def user_jobdetail(uuid2):
+    if request.method == "POST":
+        new_doc = {
+            "uuid": f"{uuid.uuid1()}",
+            "seeker": request.form["seeker"],
+            "job": request.form["job"],
+            "letter": request.form["Letter"],
+            "status": "pending",
+        }
+        db.applicant.insert_one(new_doc)
+        return redirect(
+            url_for("user_job", msg="Berhasil Daftar", limit="3", offset="0")
+        )
+    token_receive = request.cookies.get(TOKEN_KEY)
+    # token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.seeker.find_one({"email": payload["id"]})
+        if user_info:
+            jobs2 = db.jobs.find_one({"uuid": uuid2})
+            cek = db.applicant.find_one({"job": uuid2})
+            if cek is None:
+                cek = "belum Daftar"
+            return render_template(
+                "userjobdetail.html", user_info=user_info, jobs=jobs2, cek=cek
+            )
+        return redirect(url_for("sign_in"))
+
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("sign_in", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("sign_in", msg="There was problem logging you in"))
 
 
 @app.route("/sign-in", methods=["GET", "POST"])
@@ -554,6 +779,8 @@ def sign_in():
             namespace = db.seeker
         elif role == "perusahaan":
             namespace = db.company
+        elif role == "admin":
+            namespace = db.admin
         else:
             return jsonify(
                 {
