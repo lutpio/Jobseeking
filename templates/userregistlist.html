@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Lamaran Aktif</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="/docs/5.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-light" style="padding-bottom: 0px;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">KERJA.DONG</a>
+            <nav class="navbar navbar-light bg-light justify-content-end">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+                            alt="" width="30" height="30" class="d-inline-block align-text-top">
+                        Profile
+                    </a>
+                </div>
+            </nav>
+        </div>
+        <hr>
+    </header>
+    <nav>
+        <hr style="margin-top: 0%;">
+        <div class="d-inline-flex position-sticky" style="display: inline-block; align-items: baseline;">
+            <nav class="col-8" style="width: 150px; height: 500px; display: inline-block;">
+                <span>
+                    <ul class="list-unstyled ps-0">
+                        <li class="mb-1">
+                            <img src="" alt="">
+                            <button class="btn btn-toggle align-items-center rounded collapsed"
+                                data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+                                <img src="https://cdn-icons-png.flaticon.com/512/10263/10263239.png?ga=GA1.1.1358335958.1701954208"
+                                    class="b1 me-2" height="16" width="16">
+                                Home
+                            </button>
+                        </li>
+                        <li class="mb-1">
+                            <button class="btn btn-toggle align-items-center rounded collapsed"
+                                data-bs-toggle="collapse" data-bs-target="#Search-collapse" aria-expanded="false">
+                                <img src="https://cdn-icons-png.flaticon.com/512/151/151773.png?ga=GA1.1.1358335958.1701954208"
+                                    class="b1 me-2" height="16" width="16">
+                                Search
+                            </button>
+                        </li>
+                        <li class="mb-1">
+                            <button class="btn btn-toggle align-items-center rounded collapsed"
+                                data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
+                                <img src="https://cdn-icons-png.flaticon.com/512/4389/4389454.png?ga=GA1.1.1358335958.1701954208"
+                                    class="b1 me-2" height="16" width="16">
+                                Lowongan
+                            </button>
+                            <div class="collapse" id="orders-collapse" style>
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li><a href="#" class="link-dark rounded">Lowongan Anda</a></li>
+                                    <li><a href="#" class="link-dark rounded">Semua Lowongan</a></li>
+                                    <li><a href="#" class="link-dark rounded">Tambah Lowongan</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </span>
+            </nav>
+
+            <article class="d-inline-flex flex-grow-1 "
+                style="display: inline-flex; align-items: center; height:max-content; width: 800px;">
+                <main class="row " style="width: 800px;;">
+                    <a href="">Kembali</a>
+                    <article class="container-fluid">
+                        <main class="col-9" style="display: inline-block; align-self: baseline;">
+                            <h4>Lowongan Yang Anda Daftar</h4>
+                            <div class="radio-button"
+                                style="margin-top: 20px; margin-bottom: 20px; width: max-content;">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                        id="inlineRadio1" value="option1">
+                                    <label class="form-check-label" for="inlineRadio1">Semua Lowongan</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                        id="inlineRadio2" value="option2">
+                                    <label class="form-check-label" for="inlineRadio2">Ditolak</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                        id="inlineRadio1" value="option1">
+                                    <label class="form-check-label" for="inlineRadio1">Wawancara</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                        id="inlineRadio2" value="option2">
+                                    <label class="form-check-label" for="inlineRadio2">Pending</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                        id="inlineRadio2" value="option2">
+                                    <label class="form-check-label" for="inlineRadio2">Diterima</label>
+                                </div>
+                            </div>
+                            <div class="table list-lowongan">
+                                <div
+                                    class="row my-1 p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 align-items-center rounded-3 shadow">
+                                    <h5><a href="" class="link-dark">Lowongan A</a></h5>
+                                    <p>Disini Deskripsi Lowongan yang sedang dicoba daftar oleh user.</p>
+                                    <input class="btn btn-primary ms-3" type="button" value="Diterima"
+                                        style="width: min-content;">
+                                </div>
+                                <div
+                                    class="row my-2 p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 align-items-center rounded-3 shadow">
+                                    <h5><a href="" class="link-dark">Lowongan B</a></h5>
+                                    <p>Disini Deskripsi Lowongan yang sedang dicoba daftar oleh user.</p>
+                                    <input class="btn btn-primary ms-3" type="button" value="Diterima"
+                                        style="width: min-content;">
+                                </div>
+                                <div
+                                    class="row my-3 p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 align-items-center rounded-3 shadow">
+                                    <h5><a href="#" class="link-dark">Lowongan C</a></h5>
+                                    <p>Disini Deskripsi Lowongan yang sedang dicoba daftar oleh user.</p>
+                                    <input class="btn btn-primary ms-3" type="button" value="Diterima"
+                                        style="width: min-content;">
+                                </div>
+                            </div>
+                        </main>
+                    </article>
+                </main>
+            </article>
+        </div>
+    </nav>
+</body>
+
+</html>
