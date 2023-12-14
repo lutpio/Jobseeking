@@ -65,8 +65,10 @@
               $.cookie("mytoken", response["token"], { path: "/" });
               if (response["role"] == "pekerja") {
                 window.location.replace("/user-info");
-              } else {
+              } else if(response["role"] == "perusahaan") {
                 window.location.replace("/job-post");
+              } else{
+                window.location.replace("/admin-job?limit=4&offset=0");
               }
             } else {
               alert(response["msg"]);
@@ -109,6 +111,7 @@
         <option value="">-Pilih Role-</option>
         <option value="pekerja">Pekerja</option>
         <option value="perusahaan">Perusahaan</option>
+        <option value="admin">lainnya</option>
       </select>
       <button type="button" onclick="sign_in()" class="btn btn-primary">
         Login

@@ -19,6 +19,9 @@
       rel="stylesheet"
     />
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css" />
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <style>
       body {
         font-family: "Arial", sans-serif;
@@ -132,6 +135,15 @@
       .search-container select {
         margin-bottom: 10px;
       }
+      trix-toolbar [data-trix-button-group="file-tools"] {
+        display: none;
+      }
+      trix-toolbar [data-trix-attribute="code"] {
+        display: none;
+      }
+      trix-toolbar [data-trix-attribute="quote"] {
+        display: none;
+      }
     </style>
   </head>
 
@@ -220,34 +232,69 @@
           class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content"
         >
         <!--masih belom tau apakah bakal ini link ke job listnya tapi placeholder-->
-          <a href="joblist.html"> &lt; Kembali</a>
+          <a class="text-decoration-underline text-primary" onclick="history.back()"> &lt; Kembali</a>
           <article class="content-container">
             <header>
-              <h2>Job Placeholder</h2>
-              <p>Jakarta - 11 Desember, 2023</p>
-              <p>Gaji Rp. 1.000.000,- - Rp. 1.500.000,-</p>
+              <h2>{{jobs.position}}</h2>
+              <p>{{ jobs.regency | format_regency}} - {{ jobs.date | format_datetime }}</p>
+              <p>Gaji Rp.{{ jobs.wage_min }},- Rp.{{ jobs.wage_max }},-</p>
             </header>
             <section>
               <h3>Deskripsi Pekerjaan</h3>
-              <p>Ini tempat untuk append deskripsi dari pekerjaan yang ada</p>
+              {{jobs.description | safe}}
             </section>
             <section>
-              <span class="badge rounded-pill bg-primary">Tag 1</span>
-              <span class="badge rounded-pill bg-primary">Tag 2</span>
-              <button
+              <span class="badge rounded-pill bg-primary">{{jobs.tag1}}</span>
+              <span class="badge rounded-pill bg-primary">{{jobs.tag2}}</span>
+              <!--<button
                 type="button"
                 class="btn btn-primary float-right mb-3"
                 onclick="showQuillModal()"
               >
                 Daftar
+              </button>-->
+              {% if cek == 'belum Daftar'%}
+              <button type="button" class="btn btn-primary float-right mb-3" data-toggle="modal" data-target="#exampleModal">
+                Daftar
               </button>
+                {% else %}
+                <button type="button" class="btn btn-primary disabled float-right mb-3" data-toggle="modal" data-target="#exampleModal">
+                  {{ cek.status }}
+                </button>
+                
+              {%endif%}
             </section>
           </article>
         </main>
       </div>
     </div>
-
-    <div id="quill-modal">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <form method="POST" action="/user-job/{{ jobs.uuid }}">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ketik Cover Letter Anda</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <label for="Letter">Cover Letter</label>
+            <input id="seeker" type="hidden" value="{{ user_info.uuid }}" name="seeker"  />
+            <input id="job" type="hidden" value="{{ jobs.uuid }}" name="job"  />
+            
+            <input id="Letter" type="hidden" name="Letter"  />
+            <trix-editor input="Letter"></trix-editor>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Kirim</button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+    <!--<div id="quill-modal">
       <h3>Ketik Cover Letter Anda</h3>
       <div id="editor-container-modal"></div>
       <button
@@ -260,7 +307,7 @@
       <button type="button" class="btn btn-primary mt-3" onclick="sendcoverletter()">
         Kirim
       </button>
-    </div>
+    </div> -->
 
     <div id="search-modal">
       <h3>Cari Lowongan</h3>
