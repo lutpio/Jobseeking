@@ -23,6 +23,11 @@
       rel="stylesheet"
     />
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+
+   
     <style>
       body {
         font-family: "Arial", sans-serif;
@@ -138,6 +143,12 @@
         margin-right: 10px;
       }
     </style>
+    <script>
+      function logout() {
+        $.removeCookie("mytoken", { path: "/" });
+        window.location.replace("/sign-in");
+      }
+    </script>
   </head>
 
   <body>
@@ -170,7 +181,13 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="page2Dropdown">
               <a style="color: black" class="dropdown-item" href="#">Profil</a>
-              <a style="color: black" class="dropdown-item" href="#">Log Out</a>
+              <a
+                style="color: black"
+                class="dropdown-item"
+                href="#"
+                onclick="logout()"
+                >Log Out</a
+              >
             </div>
           </li>
         </ul>
@@ -264,14 +281,14 @@
           </div>
 
           <div class="container">
-            <h3>Lamaran Anda</h3>
-            <p>Posisi Magang</p>
-            <p>Tempat Gaji Rp. - Rp.</p>
-            <p>Deskripsi</p>
-            <span class="badge rounded-pill bg-primary">Tag 1</span>
-            <span class="badge rounded-pill bg-primary">Tag 2</span>
+            <h3>Lowongan Anda</h3>
+            <p>{{jobs.position}}</p>
+            <p>{{ jobs.address }} Gaji Rp.{{ jobs.wage_min }} - Rp.{{ jobs.wage_max }}</p>
+            <div>{{ jobs.description | safe }}</div>
+            <span class="badge rounded-pill bg-primary">{{ jobs.tag1 }}</span>
+            <span class="badge rounded-pill bg-primary">{{ jobs.tag2 }}</span>
             <div class="d-flex justify-content-end align-items-end">
-              <button class="btn btn-primary">Lihat Semua</button>
+              <a href="/company-job?limit=2&offset=0" class="btn btn-primary">Lihat Semua</a>
             </div>
           </div>
         </main>

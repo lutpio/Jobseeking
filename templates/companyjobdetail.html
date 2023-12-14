@@ -218,20 +218,20 @@
           class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content"
         >
         <!--masih belom tau apakah bakal ini link ke job listnya tapi placeholder-->
-          <a href="joblist.html"> &lt; Kembali</a>
+          <a class="text-decoration-underline text-primary" onclick="history.back()"> &lt; Kembali</a>
           <article class="content-container">
             <header>
-              <h2>Job Placeholder</h2>
-              <p>Jakarta - 11 Desember, 2023</p>
-              <p>Gaji Rp. 1.000.000,- - Rp. 1.500.000,-</p>
+              <h2>{{jobs.position}}</h2>
+              <p>{{ jobs.regency | format_regency}} - {{ jobs.date | format_datetime }}</p>
+              <p>Gaji Rp.{{ jobs.wage_min }},- Rp.{{ jobs.wage_max }},-</p>
             </header>
             <section>
               <h3>Deskripsi Pekerjaan</h3>
-              <p>Ini tempat untuk append deskripsi dari pekerjaan yang ada</p>
+              {{jobs.description | safe}}
             </section>
             <section>
-              <span class="badge rounded-pill bg-primary">Tag 1</span>
-              <span class="badge rounded-pill bg-primary">Tag 2</span>
+              <span class="badge rounded-pill bg-primary">{{jobs.tag1}}</span>
+              <span class="badge rounded-pill bg-primary">{{jobs.tag2}}</span>
               <button
                 type="button"
                 style="padding-right: 10px;"
@@ -240,13 +240,13 @@
               >
                 Lihat Pendaftar
               </button>
-              <button
-              type="button"
+              <a
+              href="/job-edit/{{ jobs.uuid }}"
               class="btn btn-primary float-right mb-3"
-              onclick="jobedit()"
+              
             >
               Edit
-            </button>
+            </a>
             </section>
           </article>
         </main>

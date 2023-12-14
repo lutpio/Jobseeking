@@ -10,6 +10,8 @@
     <script src="/docs/5.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 </head>
 
 <body>
@@ -68,102 +70,51 @@
                 <h1 class="navbar-brand text-dark fs-1" href="#">Lowongan</h1>
                 <hr>
                 <div class="d-flex flex-column bd-highlight mb-3 ">
-                    <div class="col d-flex align-items-start">
+                    {% for i in output %}
+                    <div class="col ">
                         <div>
-                            <h3 class="fs-4">Posisi Magang A</h3>
+                            <h3 class="fs-4">{{i.position}}</h3>
                             <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3 ms-1">
-                                <div class="p-0">Surabaya - Senin,01/12/2023</div>
-                                <div class="p-0">Gaji Rp.3.000.0000</div>
+                                <div class="p-0">{{ i.regency | format_regency}} - {{ i.date | format_datetime }}</div>
+                                <div class="p-0">Gaji Rp.{{ i.wage_max }}</div>
                             </div>
-                            <p class="p-1">Membangun dan memberikan pengalaman terbaik pada pengunjung sebuah situs,
-                                mengatur pembuatan tata letak halaman, gaya dari isi di dalam situs, dan juga
-                                interaktif. Di beberapa perusahaan, web developer bekerja sama dengan manajer produk dan
-                                desainer.</p>
+                            <div class="p-1 overflow-hidden"style="max-height: 78px">{{i.description | safe}}</div>
                             <div>
                                 <button type="button" class="btn btn-light">
-                                    tag 1
+                                    {{ i.tag1 }}
                                     <span class="badge badge-light"></span>
                                     <span class="sr-only"></span>
                                 </button>
                                 <button type="button" class="btn btn-light">
-                                    tag 2
+                                    {{ i.tag2 }}
                                     <span class="badge badge-light"></span>
                                     <span class="sr-only"></span>
                                 </button>
-                                <a href="#" class="btn btn-primary" style="float: right;">
+                                <a href="/company-job/{{ i.uuid }}" class="btn btn-primary" style="float: right;">
                                     Detail
                                 </a>
-                                <a href="#" class="btn btn-primary" style="float: right; margin-right: 10px">
+                                <a href="/seeker-job/{{ i.uuid }}" class="btn btn-primary" style="float: right; margin-right: 10px">
                                     Lihat Pendaftar
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <div class="p-2 bd-highlight">
-                        <div class="col d-flex align-items-start">
-                            <div>
-                                <h3 class="fs-4">Posisi Magang A</h3>
-                                <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3 ms-1">
-                                    <div class="p-0">Surabaya - Senin,01/12/2023</div>
-                                    <div class="p-0">Gaji Rp.3.000.0000</div>
-                                </div>
-                                <p class="p-1">Membangun dan memberikan pengalaman terbaik pada pengunjung sebuah situs,
-                                    mengatur pembuatan tata letak halaman, gaya dari isi di dalam situs, dan juga
-                                    interaktif. Di beberapa perusahaan, web developer bekerja sama dengan manajer produk
-                                    dan desainer.</p>
-                                <div>
-                                    <button type="button" class="btn btn-light">
-                                        tag 1
-                                        <span class="badge badge-light"></span>
-                                        <span class="sr-only"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-light">
-                                        tag 2
-                                        <span class="badge badge-light"></span>
-                                        <span class="sr-only"></span>
-                                    </button>
-                                    <a href="#" class="btn btn-primary" style="float: right;">
-                                        Detail
-                                    </a>
-                                    <a href="#" class="btn btn-primary" style="float: right; margin-right: 10px">
-                                        Lihat Pendaftar
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-2 bd-highlight">
-                        <div class="col d-flex align-items-start">
-                            <div>
-                                <h3 class="fs-4">Posisi Magang A</h3>
-                                <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3 ms-1">
-                                    <div class="p-0">Surabaya - Senin,01/12/2023</div>
-                                    <div class="p-0">Gaji Rp.3.000.0000</div>
-                                </div>
-                                <p class="p-1">Membangun dan memberikan pengalaman terbaik pada pengunjung sebuah situs,
-                                    mengatur pembuatan tata letak halaman, gaya dari isi di dalam situs, dan juga
-                                    interaktif. Di beberapa perusahaan, web developer bekerja sama dengan manajer produk
-                                    dan desainer.</p>
-                                <div>
-                                    <button type="button" class="btn btn-light">
-                                        tag 1
-                                        <span class="badge badge-light"></span>
-                                        <span class="sr-only"></span>
-                                    </button>
-                                    <button type="button" class="btn btn-light">
-                                        tag 2
-                                        <span class="badge badge-light"></span>
-                                        <span class="sr-only"></span>
-                                    </button>
-                                    <a href="#" class="btn btn-primary" style="float: right;">
-                                        Detail
-                                    </a>
-                                    <a href="#" class="btn btn-primary" style="float: right; margin-right: 10px">
-                                        Lihat Pendaftar
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                    
+                    {%endfor%}
+                    {% if msg %}
+                        <div class="alert alert-warning my-2" role="alert">{{ msg }}</div>
+                    {% endif %}
+                    <div class="d-flex justify-content-center">
+                        
+                        <a href="{{ prev_url }}" 
+                        class="btn btn-outline-primary {% if prev_url == 'company-job?limit=2&offset=-2' %} disabled {% endif %}  mt-3 mx-2"
+                        >
+                            Previous
+                        </a>  
+                        
+                        <a href="{{ next_url }}" class="btn btn-primary mt-3 mx-2">
+                            Next
+                        </a>  
                     </div>
                 </div>
             </div>
