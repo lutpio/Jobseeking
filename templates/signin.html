@@ -64,7 +64,7 @@
             if (response["result"] === "success") {
               $.cookie("mytoken", response["token"], { path: "/" });
               if (response["role"] == "pekerja") {
-                window.location.replace("/user-info");
+                window.location.replace("/user");
               } else if(response["role"] == "perusahaan") {
                 window.location.replace("/job-post");
               } else{

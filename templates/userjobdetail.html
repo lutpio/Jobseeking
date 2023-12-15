@@ -253,6 +253,7 @@
               >
                 Daftar
               </button>-->
+              {%if cek%}
               {% if cek == 'belum Daftar'%}
               <button type="button" class="btn btn-primary float-right mb-3" data-toggle="modal" data-target="#exampleModal">
                 Daftar
@@ -262,6 +263,7 @@
                   {{ cek.status }}
                 </button>
                 
+              {%endif%}
               {%endif%}
             </section>
           </article>
@@ -280,7 +282,9 @@
           </div>
           <div class="modal-body">
             <label for="Letter">Cover Letter</label>
+            {%if user_info%}
             <input id="seeker" type="hidden" value="{{ user_info.uuid }}" name="seeker"  />
+            {%endif%}
             <input id="job" type="hidden" value="{{ jobs.uuid }}" name="job"  />
             
             <input id="Letter" type="hidden" name="Letter"  />
