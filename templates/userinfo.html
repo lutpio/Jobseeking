@@ -304,14 +304,7 @@
                   else 'Universitas' }}
                 </p>
 
-                <div class="d-flex justify-content-end mb-3">
-                  <a href="#" class="social-icon">
-                    <i class="fa fa-instagram fa-lg"></i>
-                  </a>
-                  <a href="#" class="social-icon ml-4">
-                    <i class="fa fa-linkedin fa-lg"></i>
-                  </a>
-                </div>
+                
 
                 <div class="d-flex justify-content-end align-items-end">
                   <a href="/user-edit" class="btn btn-primary">Edit</a>
@@ -333,7 +326,7 @@
             <a href="/download?path={{ user_info.cv }}">CV</a>
             <a href="/download?path={{ user_info.certification }}">Sertifikasi</a>
           </div>
-
+          {%if jobs%}
           <div class="container">
             <h2>Lamaran Anda</h2>
             <p>{{jobs.position}}</p>
@@ -345,6 +338,7 @@
               <a href="/user-job?limit=2&offset=0" class="btn btn-primary">Lihat Semua</a>
             </div>
           </div>
+          {%endif%}
         </main>
       </div>
     </div>

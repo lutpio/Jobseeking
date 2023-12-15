@@ -59,6 +59,48 @@
         border-color: #1e7e34;
       }
     </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const provinceSelect = document.getElementById("prov");
+        const regencySelect = document.getElementById("kot");
+
+        // Fetch provinces
+        fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
+          .then((response) => response.json())
+          .then((provinces) => {
+            // Populate province select
+            provinces.forEach((province) => {
+              const option = document.createElement("option");
+              option.value = province.id;
+              option.text = province.name;
+              provinceSelect.appendChild(option);
+            });
+          });
+
+        // Event listener for province select change
+        provinceSelect.addEventListener("change", function () {
+          const selectedProvinceId = this.value;
+
+          // Clear existing options in the regency select
+          regencySelect.innerHTML = '<option selected value="">Open this select menu</option>';
+
+          if (selectedProvinceId) {
+            // Fetch regencies based on the selected province
+            fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinceId}.json`)
+              .then((response) => response.json())
+              .then((regencies) => {
+                // Populate regency select
+                regencies.forEach((regency) => {
+                  const option = document.createElement("option");
+                  option.value = regency.id;
+                  option.text = regency.name;
+                  regencySelect.appendChild(option);
+                });
+              });
+          }
+        });
+      });
+    </script>
   </head>
 
   <body>
@@ -88,24 +130,27 @@
     </div>
 
     <div class="container mt-3 search-form">
-      <form class="row g-3">
+      <form class="row g-3" method="GET" action="/search-job">
+        <input type="hidden" name="limit" value="4"/>
+        <input type="hidden" name="offset" value="0"/>
+        <input type="hidden" name="tag1" value=""/>
+        <input type="hidden" name="tag2" value=""/>
         <div class="col-md-6">
-          <input type="text" class="form-control" placeholder="Search..." />
+          <input
+          type="text"
+          name="query"
+          class="form-control mb-2"
+          placeholder="Masukkan kata kunci..."
+        />
         </div>
         <div class="col-md-3">
-          <select class="form-select">
-            <option selected>Provinsi</option>
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
+          <select class="form-control" id="prov" name="prov" >
+            <option selected value="">Provinsi</option>
           </select>
         </div>
         <div class="col-md-3">
-          <select class="form-select">
-            <option selected>Kota</option>
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
+          <select class="form-control" id="kot" name="kot" >
+            <option selected value="">Kota</option>
           </select>
         </div>
         <div class="col-12 mt-2">

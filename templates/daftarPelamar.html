@@ -16,8 +16,10 @@
         $(document).ready(function () {
             show_pelamar("all");
         });
+
         function show_pelamar(value){
             $('#list-pelamar').empty()
+            $(`#${value}`).prop("checked", true);
             $.ajax({
                 type: "GET",
                 url: `/pelamar?status=${value}&job={{ jobs.uuid }}`,
@@ -36,8 +38,9 @@
                                 <div
                                     class="row my-1 p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 align-items-center rounded-3 shadow">
                                     <p><a href="" class="link-dark">${real_name}</a></p>
-                                    <input class="btn btn-primary ms-3" type="button" value="Diterima"
-                                        style="width: min-content;">
+                                    <div class="d-flex">
+                                        <a class="btn btn-primary ms-auto mb-3" href="/seeker-job/{{ jobs.uuid }}/${name}">Detail</a>
+                                    </div>
                                 </div>
                                 `                        
                                 $('#list-pelamar').append(temp_html)
@@ -123,31 +126,31 @@
                                 style="margin-top: 20px; margin-bottom: 20px; width: max-content;">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="status"
-                                        id="all" onc>
+                                        onchange="show_pelamar('all')" id="all" >
                                     <label class="form-check-label" for="all">Semua Pendaftar</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="status"
-                                        id="ditolak" >
+                                        onchange="show_pelamar('ditolak')" id="ditolak" >
                                     <label class="form-check-label" for="ditolak">Ditolak</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="status"
-                                        id="wawancara" >
+                                        onchange="show_pelamar('wawancara')" id="wawancara" >
                                     <label class="form-check-label" for="wawancara">Wawancara</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="status"
-                                        id="pending" >
+                                        onchange="show_pelamar('pending')" id="pending" >
                                     <label class="form-check-label" for="pending">Pending</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="status"
-                                        id="diterima" >
+                                        onchange="show_pelamar('diterima')" id="diterima" >
                                     <label class="form-check-label" for="diterima">Diterima</label>
                                 </div>
                             </div>
-                            <div class="table list-lowongan" id="list-pelamar">
+                            <div class=" list-lowongan" id="list-pelamar">
                                 
                                 
                             </div>

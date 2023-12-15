@@ -232,14 +232,15 @@
             <section>
               <span class="badge rounded-pill bg-primary">{{jobs.tag1}}</span>
               <span class="badge rounded-pill bg-primary">{{jobs.tag2}}</span>
-              <button
+              <a
+                href="/seeker-job/{{ jobs.uuid }}"
                 type="button"
                 style="padding-right: 10px;"
                 class="btn btn-warning float-right mb-3"
-                onclick="daftarPelamar()"
+                
               >
                 Lihat Pendaftar
-              </button>
+              </a>
               <a
               href="/job-edit/{{ jobs.uuid }}"
               class="btn btn-primary float-right mb-3"

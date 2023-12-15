@@ -15,6 +15,31 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
+<<<<<<< HEAD
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>    
+    <script>
+        function changeStatus(value) {
+            let uid = {{ applicant.uuid|tojson }}
+            $.ajax({
+              type: "POST",
+              url: "/seeker-job/{{jobs.uuid}}/{{ seeker.uuid }}",
+              data: {
+                uuid :uid,
+                status :value ,
+                
+              },
+              success: function (response) {
+                alert(response.msg);
+                window.location.reload();
+              },
+            });
+          }
+    </script>
+  </head>
+
+  <body>
+    <header class="navbar navbar-expand-lg navbar-light bg-light" style="padding-bottom: 0px">
+=======
   </head>
 
   <body>
@@ -22,6 +47,7 @@
       class="navbar navbar-expand-lg navbar-light bg-light"
       style="padding-bottom: 0px"
     >
+>>>>>>> e290a2bd7d3c1dd128a75dbd834aa77575ac6729
       <div class="container-fluid">
         <a class="navbar-brand" href="#">KERJA.DONG</a>
         <nav class="navbar navbar-light bg-light justify-content-end">
@@ -47,10 +73,14 @@
         class="d-inline-flex position-sticky"
         style="display: inline-block; align-items: baseline"
       >
+<<<<<<< HEAD
+        <nav class="col-8" style="width: 150px; height: 500px; display: inline-block">
+=======
         <nav
           class="col-8"
           style="width: 150px; height: 500px; display: inline-block"
         >
+>>>>>>> e290a2bd7d3c1dd128a75dbd834aa77575ac6729
           <span>
             <ul class="list-unstyled ps-0">
               <li class="mb-1">
@@ -103,6 +133,11 @@
                 </button>
                 <div class="collapse" id="orders-collapse" style>
                   <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+<<<<<<< HEAD
+                    <li><a href="#" class="link-dark rounded">Lowongan Anda</a></li>
+                    <li><a href="#" class="link-dark rounded">Semua Lowongan</a></li>
+                    <li><a href="#" class="link-dark rounded">Tambah Lowongan</a></li>
+=======
                     <li>
                       <a href="#" class="link-dark rounded">Lowongan Anda</a>
                     </li>
@@ -112,6 +147,7 @@
                     <li>
                       <a href="#" class="link-dark rounded">Tambah Lowongan</a>
                     </li>
+>>>>>>> e290a2bd7d3c1dd128a75dbd834aa77575ac6729
                   </ul>
                 </div>
               </li>
@@ -121,25 +157,79 @@
 
         <article
           class="d-inline-flex flex-grow-1"
+<<<<<<< HEAD
+          style="display: inline-flex; align-items: center; height: max-content; width: 800px"
+=======
           style="
             display: inline-flex;
             align-items: center;
             height: max-content;
             width: 800px;
           "
+>>>>>>> e290a2bd7d3c1dd128a75dbd834aa77575ac6729
         >
           <main class="row" style="width: 800px">
             <a href="">Kembali</a>
             <article class="container-fluid">
+<<<<<<< HEAD
+              <main class="col-9" style="display: inline-block; align-self: baseline">
+=======
               <main
                 class="col-9"
                 style="display: inline-block; align-self: baseline"
               >
+>>>>>>> e290a2bd7d3c1dd128a75dbd834aa77575ac6729
                 <h4 class="mb-4">Pendaftar</h4>
                 <div
                   class="row p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 ms-1 align-items-center rounded-3 shadow-lg"
                 >
                   <h4>Pekerjaan</h4>
+<<<<<<< HEAD
+                  <h3>{{jobs.position}}</h3>
+                </div>
+                <div class=" list-lowongan mt-4">
+                  <nav
+                    class="row p-0 pb-0 pe-lg-1 pe-lg-1 pt-lg-1 ms-1 mb-3 align-items-center rounded-3 shadow-lg"
+                  >
+                    <h4 class="mb-5">{{ seeker.username }}</h4>
+                    <h5>Informasi Pendaftar</h5>
+                    <div
+                      class="container mb-4"
+                    >
+                    <ul class="list-group">
+                        <li class="list-group-item"><h5>Email</h5><p>{{seeker.email}}</p></li>
+                        <li class="list-group-item"><h5>Jenis Kelamin</h5><p>{{seeker.sex}}</p></li>
+                        <li class="list-group-item"><h5>Alamat Lengakap</h5><p>{{seeker.address}}</p></li>
+                        <li class="list-group-item"><h5>Perguruan Tinggi</h5><p>{{seeker.university}}</p></li>
+                        <li class="list-group-item"><h5>Program Studi</h5><p>{{seeker.department}}</p></li>
+                        <li class="list-group-item"><h5>Tahun Masuk</h5><p>{{seeker.entry_year}}</p></li>
+                    </ul>
+                    <div class="mt-3">
+                        <h5>Deskripsi Pendaftar</h5>
+                        
+                    {{seeker.description|safe}}
+                    </div>
+                    </div>
+                    <h5 class="mb-2">CV</h5>
+                    <div class="mb-2">
+                        <a href="/download?path={{ seeker.cv }}" class="btn btn-outline-primary">CV</a>
+                        <a href="/download?path={{ seeker.certification }}" class="btn btn-primary">Sertifikasi</a>
+                    </div>
+                    <hr/>
+                    <div class="mb-2 d-flex">
+                        {%if applicant.status == 'pending' or applicant.status == 'wawancara'%}
+                        <button onclick="changeStatus('ditolak')"  class="ms-auto btn btn-outline-primary">Tolak</button>
+                        <button 
+                        onclick="changeStatus('{%if applicant.status == 'pending'%}wawancara{%elif applicant.status == 'wawancara'%}diterima{%elif applicant.status == 'diterima'%}{%endif%}')"  
+                        class="ms-2 btn btn-primary">{%if applicant.status == 'pending'%}wawancara{%elif applicant.status == 'wawancara'%}diterima{%elif applicant.status == 'diterima'%}Sudah diterima{%endif%}</button>
+                        {%else%}
+                        
+                        <button  class="ms-auto disabled btn btn-primary">Sudah {{applicant.status}}</button>
+                        {%endif%}
+                    </div>
+                    
+                </div>
+=======
                   <h3>Posisi Magang A</h3>
                 </div>
                 <div class="table list-lowongan mt-4">
@@ -257,6 +347,7 @@
                       </button>
                     </div>
                   </nav>
+>>>>>>> e290a2bd7d3c1dd128a75dbd834aa77575ac6729
                 </div>
               </main>
             </article>
