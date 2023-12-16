@@ -240,7 +240,7 @@ def company_jobdetail(uuid):
 def search_job():
     offset = int(request.args["offset"])
     limit = int(request.args["limit"])
-    starting_id = db.jobs.find({"approve":"yes"}).sort("_id", -1)
+    starting_id = db.jobs.find({"approve":"yes","status":"active"}).sort("_id", -1)
     try:
         last_id = starting_id[offset]["_id"]
     except IndexError:
@@ -258,7 +258,7 @@ def search_job():
             )
         )
 
-    cari = {"_id": {"$lte": last_id},"approve":"yes"}
+    cari = {"_id": {"$lte": last_id},"approve":"yes","status":"active"}
 
     if request.args["query"]:
         cari["position"] = {
