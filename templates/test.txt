@@ -149,6 +149,7 @@ jgn lupa masukkan provinsi dan kota kyk diatas
       Batal
     </button>
   </form>
+</div>
 
 
 --
@@ -188,3 +189,19 @@ common page
 
 
 ---
+
+
+icons
+
+default profile
+<img src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208" alt="" width="20" height="20" class="d-inline-block align-text-top">
+
+Lowongan
+<img src="https://cdn-icons-png.flaticon.com/512/4389/4389454.png?ga=GA1.1.1358335958.1701954208" class="b1 me-2" height="16" width="16">
+
+Cari Lowongan
+<img src="https://cdn-icons-png.flaticon.com/512/151/151773.png?ga=GA1.1.1358335958.1701954208" class="b1 me-2" height="16" width="16">
+
+Home
+<img src="https://cdn-icons-png.flaticon.com/512/10263/10263239.png?ga=GA1.1.1358335958.1701954208" class="b1 me-2" height="16" width="16"> 
+
