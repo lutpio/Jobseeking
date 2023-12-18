@@ -1,124 +1,453 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lowongan Perusahaan</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="/docs/5.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <title>Lowongan - Company</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f8f9fa;
+      }
 
-</head>
+      #sidebar {
+        background-color: transparent;
+        color: black;
+        height: 100vh;
+        width: 160px;
+        padding-top: 80px;
+      }
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">KERJA.DONG</a>
-            <nav class="navbar navbar-light bg-light justify-content-end">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="#">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
-                            alt="" width="30" height="30" class="d-inline-block align-text-top">
-                        Profile
-                    </a>
-                </div>
-            </nav>
-        </div>
+      #sidebar a {
+        color: black;
+      }
+
+      nav {
+        background-color: #212529;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      nav a {
+        color: white;
+      }
+
+      .navbar-toggler-icon {
+        background-color: #fff;
+      }
+
+      #quill-modal,
+      #search-modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        z-index: 1000;
+        border: 1px solid #ccc;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      #editor-container-modal,
+      #search-container {
+        height: 200px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+      }
+
+      .badge-rounded {
+        border-radius: 10px;
+        padding: 8px 12px;
+        margin-right: 8px;
+        cursor: pointer;
+      }
+
+      .badge-primary {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      .search-btn {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .search-btn:hover {
+        background-color: #0056b3;
+      }
+
+      .dropdown-menu-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .dropdown-menu-grid a {
+        display: block;
+        padding: 10px;
+        color: #000;
+        text-decoration: none;
+      }
+
+      .dropdown-menu-grid a:hover {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      .search-container select {
+        margin-bottom: 20px;
+      }
+
+      .main-content {
+        margin-top: 90px;
+      }
+
+      .container {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+
+      .social-icon {
+        font-size: 24px;
+        margin-right: 10px;
+      }
+    </style>
+    <script>
+      function logout() {
+        $.removeCookie("mytoken", { path: "/" });
+        window.location.replace("/sign-in");
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        const provinceSelect = document.getElementById("prov");
+        const regencySelect = document.getElementById("kot");
+
+        // Fetch provinces
+        fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
+          .then((response) => response.json())
+          .then((provinces) => {
+            // Populate province select
+            provinces.forEach((province) => {
+              const option = document.createElement("option");
+              option.value = province.id;
+              option.text = province.name;
+              provinceSelect.appendChild(option);
+            });
+          });
+
+        // Event listener for province select change
+        provinceSelect.addEventListener("change", function () {
+          const selectedProvinceId = this.value;
+
+          // Clear existing options in the regency select
+          regencySelect.innerHTML =
+            '<option selected value="">Open this select menu</option>';
+
+          if (selectedProvinceId) {
+            // Fetch regencies based on the selected province
+            fetch(
+              `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinceId}.json`
+            )
+              .then((response) => response.json())
+              .then((regencies) => {
+                // Populate regency select
+                regencies.forEach((regency) => {
+                  const option = document.createElement("option");
+                  option.value = regency.id;
+                  option.text = regency.name;
+                  regencySelect.appendChild(option);
+                });
+              });
+          }
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+      <a class="navbar-brand" href="index.html">KERJA.DONG</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="page2Dropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+                alt=""
+                width="20"
+                height="20"
+                class="d-inline-block align-text-top"
+              />
+              {{ user_info.name }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="page2Dropdown">
+              <a style="color: black" class="dropdown-item" href="/company-info">Profil</a>
+              <a
+                style="color: black"
+                class="dropdown-item"
+                href="#"
+                onclick="logout()"
+                >Log Out</a
+              >
+            </div>
+          </li>
+        </ul>
+      </div>
     </nav>
-    <div class="nav nav-underline align-self-start">
-        <div>
-            <ul class="list-unstyled ps-0">
-                <li class="mb-1">
-                    <img src="" alt="">
-                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
-                        data-bs-target="#home-collapse" aria-expanded="false">
-                        <img src="https://cdn-icons-png.flaticon.com/512/10263/10263239.png?ga=GA1.1.1358335958.1701954208"
-                            class="b1 me-2" height="16" width="16">
-                        Home
-                    </button>
-                </li>
-                <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
-                        data-bs-target="#Search-collapse" aria-expanded="false">
-                        <img src="https://cdn-icons-png.flaticon.com/512/151/151773.png?ga=GA1.1.1358335958.1701954208"
-                            class="b1 me-2" height="16" width="16">
-                        Search
-                    </button>
-                </li>
-                <li class="mb-1">
-                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
-                        data-bs-target="#orders-collapse" aria-expanded="false">
-                        <img src="https://cdn-icons-png.flaticon.com/512/4389/4389454.png?ga=GA1.1.1358335958.1701954208"
-                            class="b1 me-2" height="16" width="16">
-                        Lowongan
-                    </button>
-                    <div class="collapse" id="orders-collapse" style>
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="#" class="link-dark rounded">Lowongan Anda</a></li>
-                            <li><a href="#" class="link-dark rounded">Semua Lowongan</a></li>
-                        </ul>
-                    </div>
-                </li>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav
+          id="sidebar"
+          class="col-md-3 col-lg-2 d-md-block fixed-left position-fixed"
+        >
+          <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" href="/company">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/10263/10263239.png?ga=GA1.1.1358335958.1701954208"
+                    class="b1 me-2"
+                    height="16"
+                    width="16"
+                  />
+                  Home
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSearchModal()">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/151/151773.png?ga=GA1.1.1358335958.1701954208"
+                    class="b1 me-2"
+                    height="16"
+                    width="16"
+                  />
+                  Cari Lowongan
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="page2Dropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/4389/4389454.png?ga=GA1.1.1358335958.1701954208"
+                    class="b1 me-2"
+                    height="16"
+                    width="16"
+                  />
+                  Lowongan
+                </a>
+                <div class="dropdown-menu" aria-labelledby="page2Dropdown">
+                  <a style="color: black" class="dropdown-item" href="/company-job"
+                    >Semua Lowongan</a
+                  >
+                  <a style="color: black" class="dropdown-item" href="/job-post"
+                    >Tambah Lowongan</a
+                  >
+                </div>
+              </li>
             </ul>
-        </div>
-        <div class="container ms-0 ">
-            <div class="container-fluid align-self-start ">
-                <h1 class="navbar-brand text-dark fs-1" href="#">Lowongan</h1>
-                <hr>
-                <div class="d-flex flex-column bd-highlight mb-3 ">
-                    {% for i in output %}
-                    <div class="col ">
+          </div>
+        </nav>
+
+        <main
+          role="main"
+          class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content"
+        >
+          <div class="container">
+            <!--mulai append disini-->
+            <h1 class="navbar-brand text-dark fs-1" href="#">Lowongan</h1>
+            <hr>
+            <div class="d-flex flex-column bd-highlight mb-3 ">
+                {% for i in output %}
+                <div class="col ">
+                    <div>
+                        <h3 class="fs-4">{{i.position}}</h3>
+                        <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3 ms-1">
+                            <div class="p-0">{{ i.regency | format_regency}} - {{ i.date | format_datetime }}</div>
+                            <div class="p-0">Gaji Rp.{{ i.wage_max }}</div>
+                        </div>
+                        <div class="p-1 overflow-hidden"style="max-height: 78px">{{i.description | safe}}</div>
                         <div>
-                            <h3 class="fs-4">{{i.position}}</h3>
-                            <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3 ms-1">
-                                <div class="p-0">{{ i.regency | format_regency}} - {{ i.date | format_datetime }}</div>
-                                <div class="p-0">Gaji Rp.{{ i.wage_max }}</div>
-                            </div>
-                            <div class="p-1 overflow-hidden"style="max-height: 78px">{{i.description | safe}}</div>
-                            <div>
-                                <button type="button" class="btn btn-light">
-                                    {{ i.tag1 }}
-                                    <span class="badge badge-light"></span>
-                                    <span class="sr-only"></span>
-                                </button>
-                                <button type="button" class="btn btn-light">
-                                    {{ i.tag2 }}
-                                    <span class="badge badge-light"></span>
-                                    <span class="sr-only"></span>
-                                </button>
-                                <a href="/company-job/{{ i.uuid }}" class="btn btn-primary" style="float: right;">
-                                    Detail
-                                </a>
-                                <a href="/seeker-job/{{ i.uuid }}" class="btn btn-primary" style="float: right; margin-right: 10px">
-                                    Lihat Pendaftar
-                                </a>
-                            </div>
+                            <button type="button" class="btn btn-light">
+                                {{ i.tag1 }}
+                                <span class="badge badge-light"></span>
+                                <span class="sr-only"></span>
+                            </button>
+                            <button type="button" class="btn btn-light">
+                                {{ i.tag2 }}
+                                <span class="badge badge-light"></span>
+                                <span class="sr-only"></span>
+                            </button>
+                            <a href="/company-job/{{ i.uuid }}" class="btn btn-primary" style="float: right;">
+                                Detail
+                            </a>
+                            <a href="/seeker-job/{{ i.uuid }}" class="btn btn-primary" style="float: right; margin-right: 10px">
+                                Lihat Pendaftar
+                            </a>
                         </div>
                     </div>
+                </div>
+                
+                {%endfor%}
+                {% if msg %}
+                    <div class="alert alert-warning my-2" role="alert">{{ msg }}</div>
+                {% endif %}
+                <div class="d-flex justify-content-center">
                     
-                    {%endfor%}
-                    {% if msg %}
-                        <div class="alert alert-warning my-2" role="alert">{{ msg }}</div>
-                    {% endif %}
-                    <div class="d-flex justify-content-center">
-                        
-                        <a href="{{ prev_url }}" 
-                        class="btn btn-outline-primary {% if prev_url == 'company-job?limit=2&offset=-2' %} disabled {% endif %}  mt-3 mx-2"
-                        >
-                            Previous
-                        </a>  
-                        
-                        <a href="{{ next_url }}" class="btn btn-primary mt-3 mx-2">
-                            Next
-                        </a>  
-                    </div>
+                    <a href="{{ prev_url }}" 
+                    class="btn btn-outline-primary {% if prev_url == 'company-job?limit=2&offset=-2' %} disabled {% endif %}  mt-3 mx-2"
+                    >
+                        Previous
+                    </a>  
+                    
+                    <a href="{{ next_url }}" class="btn btn-primary mt-3 mx-2">
+                        Next
+                    </a>  
                 </div>
             </div>
         </div>
+          </div>
 
-</body>
+          <!--<div class="container">
+            <h2>Lamaran Untuk Anda</h2>
+            <p>Posisi Magang</p>
+            <p>Tempat Gaji Rp. - Rp.</p>
+            <p>Deskripsi</p>
+            <span class="badge rounded-pill bg-primary">Tag 1</span>
+            <span class="badge rounded-pill bg-primary">Tag 2</span>
+            <div class="d-flex justify-content-end align-items-end">
+              <button class="btn btn-primary">Lihat Semua</button>
+            </div>
+          </div>-->
+        </main>
+      </div>
+    </div>
+
+    <div id="search-modal">
+      <form method="GET" action="/search-job">
+        <h3>Cari Lowongan</h3>
+        <div id="search-container">
+          <input type="hidden" name="limit" value="4" />
+          <input type="hidden" name="offset" value="0" />
+          <input
+            type="text"
+            name="query"
+            class="form-control mb-2"
+            placeholder="Masukkan kata kunci..."
+          />
+          <div class="dropdown-menu-grid">
+            <select class="form-control" id="prov" name="prov">
+              <option selected value="">Provinsi</option>
+            </select>
+            <select class="form-control" id="kot" name="kot">
+              <option selected value="">Kota</option>
+            </select>
+            <select class="form-control" name="tag1">
+              <option value="">pilih</option>
+              <option value="Cash-Management">Cash Management</option>
+              <option value="Microsft-Office">Microsft Office</option>
+              <option value="Adobe-Photoshop">Adobe Photoshop</option>
+              <option value="Figma">Figma</option>
+              <option value="Public-Speaking">Public Speaking</option>
+              <option value="Leadership">Leadership</option>
+              <option value="Web-Development">Web Development</option>
+              <option value="Desain-Web">Desain Web</option>
+              <option value="Penjualan-Pemasaran">
+                Penjualan dan Pemasaran
+              </option>
+              <option value="Keperawatan">Keperawatan</option>
+            </select>
+            <select class="form-control" name="tag2">
+              <option value="">pilih</option>
+              <option value="Cash-Management">Cash Management</option>
+              <option value="Microsft-Office">Microsft Office</option>
+              <option value="Adobe-Photoshop">Adobe Photoshop</option>
+              <option value="Figma">Figma</option>
+              <option value="Public-Speaking">Public Speaking</option>
+              <option value="Leadership">Leadership</option>
+              <option value="Web-Development">Web Development</option>
+              <option value="Desain-Web">Desain Web</option>
+              <option value="Penjualan-Pemasaran">
+                Penjualan dan Pemasaran
+              </option>
+              <option value="Keperawatan">Keperawatan</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3 search-btn">
+          Cari
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary mt-3 ml-2 search-btn"
+          onclick="hideSearchModal()"
+        >
+          Batal
+        </button>
+      </form>
+    </div>
+
+    <script>
+      function showSearchModal() {
+        document.getElementById("search-modal").style.display = "block";
+      }
+
+      function hideSearchModal() {
+        document.getElementById("search-modal").style.display = "none";
+      }
+    </script>
+  </body>
 </html>

@@ -1,3 +1,4 @@
+<!--ini isinya navbar buatan andre untuk dipake di semua page yang perlu-->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -306,63 +307,8 @@
           role="main"
           class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content"
         >
-          <h1 class="navbar-brand text-dark fs-1" href="#">Lowongan</h1>
-          <hr />
-
-          <div class="d-flex flex-column bd-highlight mb-3">
-            {% for i in output %}
-            <div class="col">
-              <div>
-                <h3 class="fs-4">{{i.position}}</h3>
-                <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3 ms-1">
-                  <div class="p-0">
-                    {{ i.regency | format_regency}} - {{ i.date |
-                    format_datetime }}
-                  </div>
-                  <div class="p-0">Gaji Rp.{{ i.wage_max }}</div>
-                </div>
-                <div class="p-1 overflow-hidden" style="max-height: 78px">
-                  {{i.description | safe}}
-                </div>
-                <div>
-                  <button type="button" class="btn btn-light">
-                    {{ i.tag1 }}
-                    <span class="badge badge-light"></span>
-                    <span class="sr-only"></span>
-                  </button>
-                  <button type="button" class="btn btn-light">
-                    {{ i.tag2 }}
-                    <span class="badge badge-light"></span>
-                    <span class="sr-only"></span>
-                  </button>
-                  <a
-                    href="/admin-job/{{ i.uuid }}"
-                    class="btn btn-primary"
-                    style="float: right"
-                  >
-                    Detail
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {%endfor%} {% if msg %}
-            <div class="alert alert-warning mt-5 mb-0" role="alert">
-              {{ msg }}
-            </div>
-            {% endif %}
-            <div class="d-flex justify-content-center">
-              <a
-                href="{{ prev_url }}"
-                class="btn btn-outline-primary {% if request.args['offset'] == '0' %} disabled {% endif %} mt-3 mx-2"
-              >
-                Previous
-              </a>
-
-              <a href="{{ next_url }}" class="btn btn-primary mt-3 mx-2">
-                Next
-              </a>
-            </div>
+          <div class="container">
+            <!--mulai append disini-->
           </div>
 
           <!--<div class="container">
