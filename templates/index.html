@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Welcome to our Platform</title>
+    <title>Welcome to our Kerja.Dong</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -27,7 +27,7 @@
       }
 
       nav a {
-        color: white !important;
+        color: white;
       }
 
       .banner {
@@ -82,11 +82,14 @@
           const selectedProvinceId = this.value;
 
           // Clear existing options in the regency select
-          regencySelect.innerHTML = '<option selected value="">Open this select menu</option>';
+          regencySelect.innerHTML =
+            '<option selected value="">Open this select menu</option>';
 
           if (selectedProvinceId) {
             // Fetch regencies based on the selected province
-            fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinceId}.json`)
+            fetch(
+              `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinceId}.json`
+            )
               .then((response) => response.json())
               .then((regencies) => {
                 // Populate regency select
@@ -106,15 +109,8 @@
   <body>
     <nav class="navbar navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <img
-            src="/docs/5.0/assets/brand/bootstrap-logo.svg"
-            alt=""
-            width="30"
-            height="24"
-            class="d-inline-block align-text-top"
-          />
-          Placeholder
+        <a class="navbar-brand" href="index.html" style="color: black">
+          KERJA.DONG
         </a>
 
         <ul class="navbar-nav ml-auto">
@@ -125,31 +121,65 @@
       </div>
     </nav>
 
-    <div>
-      <img src="your_banner_image.jpg" alt="Banner Image" class="banner" />
+    <div style="position: relative">
+      <img
+        src="https://www.pnc.com/content/dam/pnc-thought-leadership/small-business/running-your-business/pnc_insights_sb_benefits-prospective-employees-want.jpg"
+        alt="Banner Image"
+        class="banner"
+      />
+
+      <!-- Background Overlay -->
+      <div
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+        "
+      ></div>
+
+      <div
+        class="position-absolute top-50 start-50 translate-middle text-center text-white"
+      >
+        <h2
+          class="display-4"
+          style="color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7)"
+        >
+          Selamat Datang di Kerja.Dong!
+        </h2>
+        <p
+          class="lead"
+          style="color: white; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7)"
+        >
+          Tempat Pekerja dan Perusahaan Berkembang Bertemu
+        </p>
+      </div>
     </div>
 
     <div class="container mt-3 search-form">
+      <h5>Cari pekerjaan sekarang</h5>
       <form class="row g-3" method="GET" action="/search-job">
-        <input type="hidden" name="limit" value="4"/>
-        <input type="hidden" name="offset" value="0"/>
-        <input type="hidden" name="tag1" value=""/>
-        <input type="hidden" name="tag2" value=""/>
+        <input type="hidden" name="limit" value="4" />
+        <input type="hidden" name="offset" value="0" />
+        <input type="hidden" name="tag1" value="" />
+        <input type="hidden" name="tag2" value="" />
         <div class="col-md-6">
           <input
-          type="text"
-          name="query"
-          class="form-control mb-2"
-          placeholder="Masukkan kata kunci..."
-        />
+            type="text"
+            name="query"
+            class="form-control mb-2"
+            placeholder="Masukkan kata kunci..."
+          />
         </div>
         <div class="col-md-3">
-          <select class="form-control" id="prov" name="prov" >
+          <select class="form-control" id="prov" name="prov">
             <option selected value="">Provinsi</option>
           </select>
         </div>
         <div class="col-md-3">
-          <select class="form-control" id="kot" name="kot" >
+          <select class="form-control" id="kot" name="kot">
             <option selected value="">Kota</option>
           </select>
         </div>
@@ -161,7 +191,9 @@
 
     <div class="container text-center mt-5">
       <h1 class="display-4">Belum Memiliki Akun?</h1>
-      <p class="lead">Gabung dengan ratusan mahasiswa lainnya dan raih karirmu.</p>
+      <p class="lead">
+        Gabung dengan ratusan mahasiswa lainnya dan raih karirmu.
+      </p>
 
       <a href="/sign-up" class="btn btn-success mt-3">Daftar Sekarang</a>
     </div>
@@ -171,7 +203,7 @@
         <div class="row">
           <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
             <h5 class="text-uppercase">License</h5>
-            <p>Project Akhir MSIb Bla bla bla nanti diisi.</p>
+            <p>Disusun sebagai Project Akhir MSIb Batch 5 untuk LearningX.</p>
           </div>
           <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
             <h5 class="text-uppercase">Bagian Tengah</h5>
@@ -179,7 +211,11 @@
           </div>
           <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
             <p class="text-uppercase">Info Kelompok</p>
-            <p>Info Kelompok.</p>
+            <p>
+              Ahmad Deni <br />
+              Ahmad Lutfi <br />
+              Andreas Dantha Sianturi
+            </p>
           </div>
         </div>
       </div>
