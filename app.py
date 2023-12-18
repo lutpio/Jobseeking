@@ -8,16 +8,22 @@ import uuid
 import requests
 from flask import Flask, send_file, render_template, jsonify, request, redirect, url_for
 from werkzeug.utils import secure_filename
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+MONGODB_URI = os.environ.get("MONGODB_URI")
+DB_NAME =  os.environ.get("DB_NAME")
 
 app = Flask(__name__)
 
-MONGODB_CONNECTION_STRING = "mongodb+srv://ahmadlutfi606:wolfattax@cluster0.xctxali.mongodb.net/?retryWrites=true&w=majority"
-client = MongoClient(MONGODB_CONNECTION_STRING)
-db = client.jobseeking
+client = MongoClient(MONGODB_URI)
+db = client[DB_NAME]
 
 SECRET_KEY = "SEEKER"
 TOKEN_KEY = "mytoken"
-
 
 @app.route("/")
 def index():
