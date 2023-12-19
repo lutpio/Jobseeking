@@ -224,7 +224,7 @@
                 height="20"
                 class="d-inline-block align-text-top"
               />
-              {{ user_info.name }}
+              {{ user_info.username }}
             </a>
             <div class="dropdown-menu" aria-labelledby="page2Dropdown">
               <a style="color: black" class="dropdown-item" href="/user-info"
@@ -322,9 +322,11 @@
                   <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3 ms-1">
                     <div class="p-0">
                       {{ i.regency | format_regency}} - {{ i.date |
-                      format_datetime }}
+                      format_datetime }} -
                     </div>
-                    <div class="p-0">Gaji Rp.{{ i.wage_max }}</div>
+                    <div class="p-0">
+                      Gaji Rp.{{ i.wage_min }} - Rp.{{ i.wage_max }}
+                    </div>
                   </div>
                   <div class="p-1 overflow-hidden" style="max-height: 78px">
                     {{i.description | safe}}

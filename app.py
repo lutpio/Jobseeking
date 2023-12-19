@@ -361,8 +361,10 @@ def search_job():
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
+        user_info = None  # Set user_info to None in case of decoding error
         return render_template(
             "searchresult.html",
+            user_info=user_info,
             output=output,
             prev_url=prev_url,
             next_url=next_url,
@@ -446,8 +448,8 @@ def company_job():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.company.find_one({"email": payload["id"]})
         if user_info:
-            offset = int(request.args["offset"])
-            limit = int(request.args["limit"])
+            offset = int(request.args.get("offset", 0))
+            limit = int(request.args.get("limit", 3))
             starting_id = db.jobs.find({"company": user_info["uuid"]}).sort("_id", -1)
             try:
                 last_id = starting_id[offset]["_id"]
@@ -718,8 +720,8 @@ def user_job():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
         if user_info:
-            offset = int(request.args["offset"])
-            limit = int(request.args["limit"])
+            offset = int(request.args.get("offset", 0))
+            limit = int(request.args.get("limit", 3))
             starting_id = db.applicant.find({"seeker": user_info["uuid"]}).sort(
                 "_id", -1
             )
@@ -874,7 +876,7 @@ def sign_in():
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
-            return jsonify({"result": "success", "token": token, "role": role})
+            return jsonify({"result": "success", "token": token.decode("utf-8"), "role": role})
 
         else:
             return jsonify(
