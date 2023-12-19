@@ -2,10 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -18,10 +15,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link
-      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
@@ -163,8 +157,7 @@
           const selectedProvinceId = this.value;
 
           // Clear existing options in the regency select
-          regencySelect.innerHTML =
-            '<option selected value="">Open this select menu</option>';
+          regencySelect.innerHTML = '<option selected value="">Open this select menu</option>';
 
           if (selectedProvinceId) {
             // Fetch regencies based on the selected province
@@ -220,16 +213,8 @@
               {{ user_info.username }}
             </a>
             <div class="dropdown-menu" aria-labelledby="page2Dropdown">
-              <a style="color: black" class="dropdown-item" href="/user-info"
-                >Profil</a
-              >
-              <a
-                style="color: black"
-                class="dropdown-item"
-                href="#"
-                onclick="logout()"
-                >Log Out</a
-              >
+              <a style="color: black" class="dropdown-item" href="/user-info">Profil</a>
+              <a style="color: black" class="dropdown-item" href="#" onclick="logout()">Log Out</a>
             </div>
           </li>
         </ul>
@@ -238,19 +223,14 @@
 
     <div class="container-fluid">
       <div class="row">
-        <nav
-          id="sidebar"
-          class="col-md-3 col-lg-2 d-md-block fixed-left position-fixed"
-        >
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block fixed-left position-fixed">
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
                 <a class="nav-link active" href="/user"> Home </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSearchModal()">
-                  Cari Lowongan
-                </a>
+                <a class="nav-link" href="#" onclick="showSearchModal()"> Cari Lowongan </a>
               </li>
               <li class="nav-item dropdown">
                 <a
@@ -265,7 +245,7 @@
                   Lowongan
                 </a>
                 <div class="dropdown-menu" aria-labelledby="page2Dropdown">
-                  <a style="color: black" class="dropdown-item" href="/user-job"
+                  <a style="color: black" class="dropdown-item" href="/user-job?limit=2&offset=0"
                     >Semua Lowongan</a
                   >
                 </div>
@@ -274,15 +254,12 @@
           </div>
         </nav>
 
-        <main
-          role="main"
-          class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content"
-        >
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content">
           <div class="container">
             <h2>Selamat Datang di Kerja.Dong!</h2>
             <p>
-              Lengkapi profil anda sebelum melanjutkan mendaftar kerja agar
-              proposal anda bisa terima oleh perusahaan.
+              Lengkapi profil anda sebelum melanjutkan mendaftar kerja agar proposal anda bisa
+              terima oleh perusahaan.
             </p>
           </div>
 
@@ -330,9 +307,7 @@
               <option value="Leadership">Leadership</option>
               <option value="Web-Development">Web Development</option>
               <option value="Desain-Web">Desain Web</option>
-              <option value="Penjualan-Pemasaran">
-                Penjualan dan Pemasaran
-              </option>
+              <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
               <option value="Keperawatan">Keperawatan</option>
             </select>
             <select class="form-control" name="tag2">
@@ -345,16 +320,12 @@
               <option value="Leadership">Leadership</option>
               <option value="Web-Development">Web Development</option>
               <option value="Desain-Web">Desain Web</option>
-              <option value="Penjualan-Pemasaran">
-                Penjualan dan Pemasaran
-              </option>
+              <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
               <option value="Keperawatan">Keperawatan</option>
             </select>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-3 search-btn">
-          Cari
-        </button>
+        <button type="submit" class="btn btn-primary mt-3 search-btn">Cari</button>
         <button
           type="button"
           class="btn btn-secondary mt-3 ml-2 search-btn"
