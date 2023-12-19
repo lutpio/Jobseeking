@@ -2,10 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -14,22 +11,12 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link
-      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://unpkg.com/trix@2.0.0/dist/trix.css"
-    />
-    <script
-      type="text/javascript"
-      src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"
-    ></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css" />
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
     <style>
       body {
         font-family: "Arial", sans-serif;
@@ -178,8 +165,7 @@
           const selectedProvinceId = this.value;
 
           // Clear existing options in the regency select
-          regencySelect.innerHTML =
-            '<option selected value="">Open this select menu</option>';
+          regencySelect.innerHTML = '<option selected value="">Open this select menu</option>';
 
           if (selectedProvinceId) {
             // Fetch regencies based on the selected province
@@ -232,17 +218,20 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            > <img src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208" alt="" width="20" height="20" class="d-inline-block align-text-top">
+            >
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+                alt=""
+                width="20"
+                height="20"
+                class="d-inline-block align-text-top"
+              />
 
               {{user_info.name}}
             </a>
             <div class="dropdown-menu" aria-labelledby="page2Dropdown">
-              <a style="color: black" class="dropdown-item" href="/company-info"
-                >Profil</a
-              >
-              <a style="color: black" class="dropdown-item" onclick="logout()"
-                >Log Out</a
-              >
+              <a style="color: black" class="dropdown-item" href="/company-info">Profil</a>
+              <a style="color: black" class="dropdown-item" onclick="logout()">Log Out</a>
             </div>
           </li>
         </ul>
@@ -251,18 +240,28 @@
 
     <div class="container-fluid">
       <div class="row">
-        <nav
-          id="sidebar"
-          class="col-md-3 col-lg-2 d-md-block fixed-left position-fixed"
-        >
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block fixed-left position-fixed">
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link active" href="/company"> <img src="https://cdn-icons-png.flaticon.com/512/10263/10263239.png?ga=GA1.1.1358335958.1701954208" class="b1 me-2" height="16" width="16"> 
-                  Home </a>
+                <a class="nav-link active" href="/company">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/10263/10263239.png?ga=GA1.1.1358335958.1701954208"
+                    class="b1 me-2"
+                    height="16"
+                    width="16"
+                  />
+                  Home
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSearchModal()"> <img src="https://cdn-icons-png.flaticon.com/512/151/151773.png?ga=GA1.1.1358335958.1701954208" class="b1 me-2" height="16" width="16">
+                <a class="nav-link" href="#" onclick="showSearchModal()">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/151/151773.png?ga=GA1.1.1358335958.1701954208"
+                    class="b1 me-2"
+                    height="16"
+                    width="16"
+                  />
 
                   Cari Lowongan
                 </a>
@@ -276,16 +275,23 @@
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
-                > <img src="https://cdn-icons-png.flaticon.com/512/4389/4389454.png?ga=GA1.1.1358335958.1701954208" class="b1 me-2" height="16" width="16">
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/4389/4389454.png?ga=GA1.1.1358335958.1701954208"
+                    class="b1 me-2"
+                    height="16"
+                    width="16"
+                  />
                   Lowongan
                 </a>
                 <div class="dropdown-menu" aria-labelledby="page2Dropdown">
-                  <a style="color: black" class="dropdown-item" href="/company-job"
+                  <a
+                    style="color: black"
+                    class="dropdown-item"
+                    href="/company-job?limit=4&offset=0&query=&prov=&kot=&tag1=&tag2="
                     >Semua Lowongan</a
                   >
-                  <a style="color: black" class="dropdown-item" href="/job-post"
-                    >Tambah Lowongan</a
-                  >
+                  <a style="color: black" class="dropdown-item" href="/job-post">Tambah Lowongan</a>
                 </div>
               </li>
             </ul>
@@ -294,9 +300,7 @@
         <div class="container mt-4 center-container">
           <form action="/job-post" method="POST" class="input-container">
             {% if msg %}
-            <div class="alert alert-warning mt-5 mb-0" role="alert">
-              {{ msg }}
-            </div>
+            <div class="alert alert-warning mt-5 mb-0" role="alert">{{ msg }}</div>
             {% endif %}
             <h2>Tambah Lowongan</h2>
             <div class="row">
@@ -377,16 +381,9 @@
               </div>
               <div class="col-md-12 mb-3">
                 <label for="department">Jurusan</label>
-                <select
-                  class="form-control"
-                  id="department"
-                  name="department"
-                  required
-                >
+                <select class="form-control" id="department" name="department" required>
                   <option value="">pilih</option>
-                  <option value="Kedokteran-Keperawatan">
-                    Kedokteran-Keperawatan
-                  </option>
+                  <option value="Kedokteran-Keperawatan">Kedokteran-Keperawatan</option>
                   <option value="Akuntansi-Keuangan">Akuntansi-Keuangan</option>
                   <option value="Media-Komunikasi">Media-Komunikasi</option>
                   <option value="IT">IT</option>
@@ -404,9 +401,7 @@
                   <option value="Leadership">Leadership</option>
                   <option value="Web-Development">Web Development</option>
                   <option value="Desain-Web">Desain Web</option>
-                  <option value="Penjualan-Pemasaran">
-                    Penjualan dan Pemasaran
-                  </option>
+                  <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
                   <option value="Keperawatan">Keperawatan</option>
                 </select>
               </div>
@@ -422,21 +417,15 @@
                   <option value="Leadership">Leadership</option>
                   <option value="Web-Development">Web Development</option>
                   <option value="Desain-Web">Desain Web</option>
-                  <option value="Penjualan-Pemasaran">
-                    Penjualan dan Pemasaran
-                  </option>
+                  <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
                   <option value="Keperawatan">Keperawatan</option>
                 </select>
               </div>
               <div class="col-md-10 mt-3">
-                <button type="button" class="btn btn-warning float-right">
-                  Cancel
-                </button>
+                <button type="button" class="btn btn-warning float-right">Cancel</button>
               </div>
               <div class="col-md-2 mt-3">
-                <button type="submit" class="btn btn-primary float-right">
-                  Tambah
-                </button>
+                <button type="submit" class="btn btn-primary float-right">Tambah</button>
               </div>
             </div>
           </form>
@@ -444,7 +433,7 @@
       </div>
     </div>
     <div id="search-modal">
-      <form method="GET" action="/search-job">
+      <form method="GET" action="/company-job">
         <h3>Cari Lowongan</h3>
         <div id="search-container">
           <input type="hidden" name="limit" value="4" />
@@ -472,9 +461,7 @@
               <option value="Leadership">Leadership</option>
               <option value="Web-Development">Web Development</option>
               <option value="Desain-Web">Desain Web</option>
-              <option value="Penjualan-Pemasaran">
-                Penjualan dan Pemasaran
-              </option>
+              <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
               <option value="Keperawatan">Keperawatan</option>
             </select>
             <select class="form-control" name="tag2">
@@ -487,23 +474,26 @@
               <option value="Leadership">Leadership</option>
               <option value="Web-Development">Web Development</option>
               <option value="Desain-Web">Desain Web</option>
-              <option value="Penjualan-Pemasaran">
-                Penjualan dan Pemasaran
-              </option>
+              <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
               <option value="Keperawatan">Keperawatan</option>
             </select>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-3 search-btn">
-          Cari
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary mt-3 ml-2 search-btn"
-          onclick="hideSearchModal()"
-        >
-          Batal
-        </button>
+        <div class="d-flex">
+          <a
+            href="/company-job?limit=4&offset=0&query=&prov=&kot=&tag1=&tag2="
+            class="btn btn-primary mt-3 mr-auto search-btn"
+            >Lihat Semua</a
+          >
+          <button type="submit" class="btn btn-primary mt-3 search-btn">Cari</button>
+          <button
+            type="button"
+            class="btn btn-secondary mt-3 ml-2 search-btn"
+            onclick="hideSearchModal()"
+          >
+            Batal
+          </button>
+        </div>
       </form>
     </div>
     <script>

@@ -11,11 +11,11 @@ from werkzeug.utils import secure_filename
 from os.path import join, dirname
 from dotenv import load_dotenv
 
-dotenv_path = join(dirname(__file__), '.env')
+dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 
 MONGODB_URI = os.environ.get("MONGODB_URI")
-DB_NAME =  os.environ.get("DB_NAME")
+DB_NAME = os.environ.get("DB_NAME")
 
 app = Flask(__name__)
 
@@ -24,6 +24,7 @@ db = client[DB_NAME]
 
 SECRET_KEY = "SEEKER"
 TOKEN_KEY = "mytoken"
+
 
 @app.route("/")
 def index():
@@ -246,7 +247,7 @@ def company_jobdetail(uuid):
 def search_job():
     offset = int(request.args["offset"])
     limit = int(request.args["limit"])
-    starting_id = db.jobs.find({"approve":"yes","status":"active"}).sort("_id", -1)
+    starting_id = db.jobs.find({"approve": "yes", "status": "active"}).sort("_id", -1)
     try:
         last_id = starting_id[offset]["_id"]
     except IndexError:
@@ -264,7 +265,7 @@ def search_job():
             )
         )
 
-    cari = {"_id": {"$lte": last_id},"approve":"yes","status":"active"}
+    cari = {"_id": {"$lte": last_id}, "approve": "yes", "status": "active"}
 
     if request.args["query"]:
         cari["position"] = {
@@ -451,36 +452,110 @@ def company_job():
             offset = int(request.args.get("offset", 0))
             limit = int(request.args.get("limit", 3))
             starting_id = db.jobs.find({"company": user_info["uuid"]}).sort("_id", -1)
-            try:
-                last_id = starting_id[offset]["_id"]
-            except IndexError:
+            if db.jobs.count_documents({"company": user_info["uuid"]}) > 0:
+                try:
+                    last_id = starting_id[offset]["_id"]
+                except IndexError:
+                    return redirect(
+                        url_for(
+                            "company_job",
+                            limit=str(limit),
+                            offset=str(offset - limit),
+                            query=request.args["query"],
+                            prov=request.args["prov"],
+                            kot=request.args["kot"],
+                            tag1=request.args["tag1"],
+                            tag2=request.args["tag2"],
+                            msg="Lowongan Hanya Sampai Sini",
+                        )
+                    )
+            else:
                 return redirect(
                     url_for(
-                        "company_job",
-                        limit=str(limit),
-                        offset=str(offset - limit),
-                        msg="Lowongan Hanya Sampai Sini",
+                        "company_info",
+                        msg="Lowongan Kosong",
                     )
                 )
 
+            cari = {"_id": {"$lte": last_id}, "company": user_info["uuid"]}
+            if request.args["query"]:
+                cari["position"] = {
+                    "$regex": f"{request.args['query']}",
+                    "$options": "i",
+                }
+            if request.args["prov"]:
+                cari["province"] = f"{request.args['prov']}"
+            if request.args["kot"]:
+                cari["regency"] = f"{request.args['kot']}"
+
+            if request.args["tag1"]:
+                cari["$or"] = [
+                    {"tag1": request.args["tag1"]},
+                    {"tag2": request.args["tag1"]},
+                ]
+            if request.args["tag2"]:
+                cari["$or"] = [
+                    {"tag1": request.args["tag2"]},
+                    {"tag2": request.args["tag2"]},
+                ]
+            if request.args["tag2"] and request.args["tag1"]:
+                cari["$or"] = [
+                    {"tag1": {"$in": [request.args["tag2"], request.args["tag1"]]}},
+                    {"tag2": {"$in": [request.args["tag2"], request.args["tag1"]]}},
+                ]
+
             thelist = (
                 db.jobs.find(
-                    {"_id": {"$lte": last_id}, "company": user_info["uuid"]},
+                    cari,
                     {"_id": False},
                 )
                 .sort("_id", -1)
                 .limit(limit)
             )
+            # thelist = (
+            #     db.jobs.find(
+            #         {"_id": {"$lte": last_id}, "company": user_info["uuid"]},
+            #         {"_id": False},
+            #     )
+            #     .sort("_id", -1)
+            #     .limit(limit)
+            # )
 
             output = []
             for i in thelist:
                 output.append(i)
 
             next_url = (
-                "company-job?limit=" + str(limit) + "&offset=" + str(offset + limit)
+                "company-job?limit="
+                + str(limit)
+                + "&offset="
+                + str(offset + limit)
+                + "&query="
+                + request.args["query"]
+                + "&prov="
+                + str(request.args["prov"])
+                + "&kot="
+                + str(request.args["kot"])
+                + "&tag1="
+                + request.args["tag1"]
+                + "&tag2="
+                + request.args["tag2"]
             )
             prev_url = (
-                "company-job?limit=" + str(limit) + "&offset=" + str(offset - limit)
+                "company-job?limit="
+                + str(limit)
+                + "&offset="
+                + str(offset - limit)
+                + "&query="
+                + request.args["query"]
+                + "&prov="
+                + str(request.args["prov"])
+                + "&kot="
+                + str(request.args["kot"])
+                + "&tag1="
+                + request.args["tag1"]
+                + "&tag2="
+                + request.args["tag2"]
             )
 
             msg = request.args.get("msg")
@@ -515,7 +590,10 @@ def company_info():
             #         "msg": user_info,
             #     }
             # )
-            return render_template("companyinfo.html", user_info=user_info, jobs=jobs)
+            msg = request.args.get("msg")
+            return render_template(
+                "companyinfo.html", user_info=user_info, jobs=jobs, msg=msg
+            )
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -533,8 +611,11 @@ def user_info():
         user_info = db.seeker.find_one({"email": payload["id"]})
         if user_info:
             lowongan = db.applicant.find_one({"seeker": user_info["uuid"]})
-            job = db.jobs.find_one({"uuid": lowongan["job"]})
-            return render_template("userinfo.html", user_info=user_info, jobs=job)
+            if lowongan:
+                job = db.jobs.find_one({"uuid": lowongan["job"]})
+                return render_template("userinfo.html", user_info=user_info, jobs=job)
+            return render_template("userinfo.html", user_info=user_info)
+
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -558,6 +639,8 @@ def companymain():
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("sign_in", msg="There was problem logging you in"))
+
+
 @app.route("/user")
 def usermain():
     token_receive = request.cookies.get(TOKEN_KEY)
@@ -725,13 +808,14 @@ def user_job():
             starting_id = db.applicant.find({"seeker": user_info["uuid"]}).sort(
                 "_id", -1
             )
+            last_id = starting_id[offset]["_id"]
             jobku = []
             for i in starting_id:
                 jobku.append(i["job"])
 
-            starting_id2 = db.jobs.find().sort("_id", -1)
+            starting_id2 = db.jobs.find({"uuid": {"$in": jobku}}).sort("_id", -1)
             try:
-                last_id = starting_id2[offset]["_id"]
+                last_id2 = starting_id2[offset]["_id"]
             except IndexError:
                 return redirect(
                     url_for(
@@ -744,7 +828,7 @@ def user_job():
 
             thelist = (
                 db.jobs.find(
-                    {"_id": {"$lte": last_id}, "uuid": {"$in": jobku}},
+                    {"_id": {"$lte": last_id2}, "uuid": {"$in": jobku}},
                     {"_id": False},
                 )
                 .sort("_id", -1)
@@ -827,7 +911,7 @@ def user_jobdetail(uuid2):
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
         if user_info:
-            cek = db.applicant.find_one({"job": uuid2})
+            cek = db.applicant.find_one({"job": uuid2, "seeker": user_info["uuid"]})
             if cek is None:
                 cek = "belum Daftar"
             return render_template(
@@ -876,7 +960,7 @@ def sign_in():
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
-            return jsonify({"result": "success", "token": token.decode("utf-8"), "role": role})
+            return jsonify({"result": "success", "token": token, "role": role})
 
         else:
             return jsonify(

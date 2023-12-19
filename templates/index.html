@@ -82,8 +82,7 @@
           const selectedProvinceId = this.value;
 
           // Clear existing options in the regency select
-          regencySelect.innerHTML =
-            '<option selected value="">Open this select menu</option>';
+          regencySelect.innerHTML = '<option selected value="">Open this select menu</option>';
 
           if (selectedProvinceId) {
             // Fetch regencies based on the selected province
@@ -109,13 +108,11 @@
   <body>
     <nav class="navbar navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="index.html" style="color: black">
-          KERJA.DONG
-        </a>
+        <a class="navbar-brand" href="index.html" style="color: black"> KERJA.DONG </a>
 
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#">Cari Posisi Magang</a>
+            <a class="nav-link" href="/user-info">Cari Posisi Magang</a>
           </li>
         </ul>
       </div>
@@ -140,19 +137,11 @@
         "
       ></div>
 
-      <div
-        class="position-absolute top-50 start-50 translate-middle text-center text-white"
-      >
-        <h2
-          class="display-4"
-          style="color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7)"
-        >
+      <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
+        <h2 class="display-4" style="color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7)">
           Selamat Datang di Kerja.Dong!
         </h2>
-        <p
-          class="lead"
-          style="color: white; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7)"
-        >
+        <p class="lead" style="color: white; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7)">
           Tempat Pekerja dan Perusahaan Berkembang Bertemu
         </p>
       </div>
@@ -184,6 +173,11 @@
           </select>
         </div>
         <div class="col-12 mt-2">
+          <a
+            href="/search-job?limit=4&offset=0&query=&prov=&kot=&tag1=&tag2="
+            class="btn btn-outline-primary search-btn"
+            >Lihat Semua</a
+          >
           <button type="submit" class="btn btn-primary">Cari</button>
         </div>
       </form>
@@ -191,9 +185,7 @@
 
     <div class="container text-center mt-5">
       <h1 class="display-4">Belum Memiliki Akun?</h1>
-      <p class="lead">
-        Gabung dengan ratusan mahasiswa lainnya dan raih karirmu.
-      </p>
+      <p class="lead">Gabung dengan ratusan mahasiswa lainnya dan raih karirmu.</p>
 
       <a href="/sign-up" class="btn btn-success mt-3">Daftar Sekarang</a>
     </div>

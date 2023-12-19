@@ -2,10 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -18,22 +15,12 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link
-      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://unpkg.com/trix@2.0.0/dist/trix.css"
-    />
-    <script
-      type="text/javascript"
-      src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"
-    ></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css" />
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
     <style>
       body {
         font-family: "Arial", sans-serif;
@@ -186,8 +173,7 @@
           const selectedProvinceId = this.value;
 
           // Clear existing options in the regency select
-          regencySelect.innerHTML =
-            '<option selected value="">Open this select menu</option>';
+          regencySelect.innerHTML = '<option selected value="">Open this select menu</option>';
 
           if (selectedProvinceId) {
             // Fetch regencies based on the selected province
@@ -207,6 +193,36 @@
           }
         });
       });
+      function save() {
+        let uuid = $("#uuid").val();
+        let name = $("#name").val();
+        let email = $("#email").val();
+        let address = $("#address").val();
+        let sector = $("#sector").val();
+        let sosmed_1 = $("#sosmed_1").val();
+        let sosmed_2 = $("#sosmed_2").val();
+        let licensing = $("#licensing").val();
+        let description = $("#description").val();
+        $.ajax({
+          type: "POST",
+          url: "/company-edit",
+          data: {
+            uuid: uuid,
+            name: name,
+            email: email,
+            address: address,
+            sector: sector,
+            sosmed_1: sosmed_1,
+            sosmed_2: sosmed_2,
+            licensing: licensing,
+            description: description,
+          },
+          success: function (response) {
+            alert(response.msg);
+            window.location.reload();
+          },
+        });
+      }
     </script>
   </head>
 
@@ -246,14 +262,8 @@
               {{ user_info.username }}
             </a>
             <div class="dropdown-menu" aria-labelledby="page2Dropdown">
-              <a style="color: black" class="dropdown-item" href="#">Profil</a>
-              <a
-                style="color: black"
-                class="dropdown-item"
-                href="#"
-                onclick="logout()"
-                >Log Out</a
-              >
+              <a style="color: black" class="dropdown-item" href="/company-info">Profil</a>
+              <a style="color: black" class="dropdown-item" href="#" onclick="logout()">Log Out</a>
             </div>
           </li>
         </ul>
@@ -262,10 +272,7 @@
 
     <div class="container-fluid">
       <div class="row">
-        <nav
-          id="sidebar"
-          class="col-md-3 col-lg-2 d-md-block fixed-left position-fixed"
-        >
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block fixed-left position-fixed">
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
@@ -309,38 +316,24 @@
                   Lowongan
                 </a>
                 <div class="dropdown-menu" aria-labelledby="page2Dropdown">
-                  <a
-                    style="color: black"
-                    class="dropdown-item"
-                    href="/company-job"
+                  <a style="color: black" class="dropdown-item" href="/company-job?limit=4&offset=0&query=&prov=&kot=&tag1=&tag2="
                     >Semua Lowongan</a
                   >
-                  <a style="color: black" class="dropdown-item" href="/job-post"
-                    >Tambah Lowongan</a
-                  >
+                  <a style="color: black" class="dropdown-item" href="/job-post">Tambah Lowongan</a>
                 </div>
               </li>
             </ul>
           </div>
         </nav>
 
-        <main
-          role="main"
-          class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content"
-        >
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content">
           <main class="row">
             <article>
-              <main
-                class="col-9"
-                style="display: inline-block; align-self: baseline"
-              >
+              <main class="col-9" style="display: inline-block; align-self: baseline">
                 <h5>Edit Profile</h5>
               </main>
             </article>
-            <article
-              class="d-inline-flex"
-              style="margin-top: 10px; width: 200px"
-            >
+            <article class="d-inline-flex" style="margin-top: 10px; width: 200px">
               <div id="deskripsi" style="width: 270px">
                 <div class="mb-3" style="width: 350px">
                   <label for="name" class="form-label">Nama Perusahaan</label>
@@ -355,9 +348,7 @@
                   />
                 </div>
                 <div class="mb-3" style="width: 350px">
-                  <label for="address" class="form-label"
-                    >Lokasi Perusahaan</label
-                  >
+                  <label for="address" class="form-label">Lokasi Perusahaan</label>
                   <input
                     type="text"
                     class="form-control"
@@ -368,9 +359,7 @@
                   />
                 </div>
                 <div class="mb-3" style="width: 350px">
-                  <label for="sector" class="form-label"
-                    >Bidang Perusahaan</label
-                  >
+                  <label for="sector" class="form-label">Bidang Perusahaan</label>
                   <input
                     type="text"
                     class="form-control"
@@ -381,9 +370,7 @@
                   />
                 </div>
                 <div class="mb-3" style="width: 350px">
-                  <label for="licensing" class="form-label"
-                    >Perizinan Perusahaan</label
-                  >
+                  <label for="licensing" class="form-label">Perizinan Perusahaan</label>
                   <input
                     type="text"
                     class="form-control"
@@ -394,9 +381,7 @@
                   />
                 </div>
                 <div class="mb-3" style="width: 350px">
-                  <label for="email" class="form-label"
-                    >Kontak Perusahaan</label
-                  >
+                  <label for="email" class="form-label">Kontak Perusahaan</label>
                   <input
                     type="email"
                     class="form-control"
@@ -419,10 +404,8 @@
                   <trix-editor input="description"></trix-editor>
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-3">
-                  <button class="btn btn-primary me-md-2" type="button">
-                    Cancel
-                  </button>
-                  <button class="btn btn-primary" type="submit">Save</button>
+                  <button class="btn btn-primary me-md-2" type="button">Cancel</button>
+                  <button class="btn btn-primary" type="button" onclick="save()">Save</button>
                 </div>
               </div>
               <div id="Sosmed" style="width: 400px; margin-left: 100px">
@@ -430,7 +413,7 @@
                   <p style="width: 200px">Sosial Media</p>
                   <div class="d-inline-flex">
                     <div class="mb-3" style="width: 350px">
-                      <label for="sosmed_1" class="form-label">Instagram</label>
+                      <label for="sosmed_1" class="form-label">Link Instagram</label>
                       <input
                         type="text"
                         class="form-control"
@@ -441,7 +424,7 @@
                       />
                     </div>
                     <div class="mb-3" style="width: 350px">
-                      <label for="sosmed_2" class="form-label">LinkedIn</label>
+                      <label for="sosmed_2" class="form-label">Link LinkedIn</label>
                       <input
                         type="text"
                         class="form-control"
@@ -492,43 +475,22 @@
               >
                 <div class="modal-dialog">
                   <div class="modal-content">
-                    <form
-                      action="/user-editFile"
-                      method="POST"
-                      enctype="multipart/form-data"
-                    >
+                    <form action="/user-editFile" method="POST" enctype="multipart/form-data">
                       <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="photoModalLabel">
-                          Foto
-                        </h1>
+                        <h1 class="modal-title fs-5" id="photoModalLabel">Foto</h1>
                         <button
                           type="button"
-                          class="btn-close"
+                          class="close"
                           data-bs-dismiss="modal"
                           aria-label="Close"
-                        ></button>
+                        ><span aria-hidden="true">&times;</span></button>
                       </div>
                       <div class="modal-body">
                         <div class="mb-3">
-                          <label for="formFile" class="form-label"
-                            >File Foto</label
-                          >
-                          <input
-                            class="form-control"
-                            type="file"
-                            name="formFile"
-                            id="formFile"
-                          />
-                          <input
-                            type="hidden"
-                            name="folder"
-                            value="company_pic"
-                          />
-                          <input
-                            type="hidden"
-                            name="uuid"
-                            value="{{ user_info.uuid }}"
-                          />
+                          <label for="formFile" class="form-label">File Foto</label>
+                          <input class="form-control" type="file" name="formFile" id="formFile" />
+                          <input type="hidden" name="folder" value="company_pic" />
+                          <input type="hidden" name="uuid" value="{{ user_info.uuid }}" />
                           <input
                             type="hidden"
                             name="realFile"
@@ -537,22 +499,26 @@
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <a
-                          href="/download?path={{ user_info.profile_pic }}"
-                          class="btn btn-outline-secondary me-auto"
-                        >
+                       
+                        {%if user_info.company_pic%}
+                          <a
+                            href="/download?path={{ user_info.company_pic }}"
+                            class="btn btn-outline-secondary me-auto"
+                          >
+                          {%else%}
+                          <a
+                            href=""
+                            class="btn btn-outline-secondary me-auto disabled"
+                            
+                          >
+
+                          {%endif%}
                           Download
                         </a>
-                        <button
-                          type="button"
-                          class="btn btn-secondary"
-                          data-bs-dismiss="modal"
-                        >
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                           Close
                         </button>
-                        <button type="submit" class="btn btn-primary">
-                          Save changes
-                        </button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
                       </div>
                     </form>
                   </div>
@@ -577,7 +543,7 @@
     </div>
 
     <div id="search-modal">
-      <form method="GET" action="/search-job">
+      <form method="GET" action="/company-job">
         <h3>Cari Lowongan</h3>
         <div id="search-container">
           <input type="hidden" name="limit" value="4" />
@@ -605,9 +571,7 @@
               <option value="Leadership">Leadership</option>
               <option value="Web-Development">Web Development</option>
               <option value="Desain-Web">Desain Web</option>
-              <option value="Penjualan-Pemasaran">
-                Penjualan dan Pemasaran
-              </option>
+              <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
               <option value="Keperawatan">Keperawatan</option>
             </select>
             <select class="form-control" name="tag2">
@@ -620,23 +584,26 @@
               <option value="Leadership">Leadership</option>
               <option value="Web-Development">Web Development</option>
               <option value="Desain-Web">Desain Web</option>
-              <option value="Penjualan-Pemasaran">
-                Penjualan dan Pemasaran
-              </option>
+              <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
               <option value="Keperawatan">Keperawatan</option>
             </select>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-3 search-btn">
-          Cari
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary mt-3 ml-2 search-btn"
-          onclick="hideSearchModal()"
-        >
-          Batal
-        </button>
+        <div class="d-flex">
+          <a
+            href="/company-job?limit=4&offset=0&query=&prov=&kot=&tag1=&tag2="
+            class="btn btn-primary mt-3 mr-auto search-btn"
+            >Lihat Semua</a
+          >
+          <button type="submit" class="btn btn-primary mt-3 search-btn">Cari</button>
+          <button
+            type="button"
+            class="btn btn-secondary mt-3 ml-2 search-btn"
+            onclick="hideSearchModal()"
+          >
+            Batal
+          </button>
+        </div>
       </form>
     </div>
 
@@ -649,5 +616,10 @@
         document.getElementById("search-modal").style.display = "none";
       }
     </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>

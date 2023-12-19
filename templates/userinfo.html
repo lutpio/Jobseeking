@@ -2,10 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -18,10 +15,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link
-      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
@@ -167,7 +161,9 @@
 
           if (selectedProvinceId) {
             // Fetch regencies based on the selected province
-            fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinceId}.json`)
+            fetch(
+              `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinceId}.json`
+            )
               .then((response) => response.json())
               .then((regencies) => {
                 // Populate regency select
@@ -213,18 +209,19 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-            > <img src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208" alt="" width="20" height="20" class="d-inline-block align-text-top">
+            >
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
+                alt=""
+                width="20"
+                height="20"
+                class="d-inline-block align-text-top"
+              />
               {{ user_info.username }}
             </a>
             <div class="dropdown-menu" aria-labelledby="page2Dropdown">
               <a style="color: black" class="dropdown-item" href="/user-info">Profil</a>
-              <a
-                style="color: black"
-                class="dropdown-item"
-                href="#"
-                onclick="logout()"
-                >Log Out</a
-              >
+              <a style="color: black" class="dropdown-item" href="#" onclick="logout()">Log Out</a>
             </div>
           </li>
         </ul>
@@ -233,18 +230,28 @@
 
     <div class="container-fluid">
       <div class="row">
-        <nav
-          id="sidebar"
-          class="col-md-3 col-lg-2 d-md-block fixed-left position-fixed"
-        >
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block fixed-left position-fixed">
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link active" href="/user"> <img src="https://cdn-icons-png.flaticon.com/512/10263/10263239.png?ga=GA1.1.1358335958.1701954208" class="b1 me-2" height="16" width="16"> 
-                  Home </a>
+                <a class="nav-link active" href="/user">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/10263/10263239.png?ga=GA1.1.1358335958.1701954208"
+                    class="b1 me-2"
+                    height="16"
+                    width="16"
+                  />
+                  Home
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSearchModal()"> <img src="https://cdn-icons-png.flaticon.com/512/151/151773.png?ga=GA1.1.1358335958.1701954208" class="b1 me-2" height="16" width="16">
+                <a class="nav-link" href="#" onclick="showSearchModal()">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/151/151773.png?ga=GA1.1.1358335958.1701954208"
+                    class="b1 me-2"
+                    height="16"
+                    width="16"
+                  />
 
                   Cari Lowongan
                 </a>
@@ -258,12 +265,18 @@
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
-                > <img src="https://cdn-icons-png.flaticon.com/512/4389/4389454.png?ga=GA1.1.1358335958.1701954208" class="b1 me-2" height="16" width="16">
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/4389/4389454.png?ga=GA1.1.1358335958.1701954208"
+                    class="b1 me-2"
+                    height="16"
+                    width="16"
+                  />
 
                   Lowongan
                 </a>
                 <div class="dropdown-menu" aria-labelledby="page2Dropdown">
-                  <a style="color: black" class="dropdown-item" href="/user-job"
+                  <a style="color: black" class="dropdown-item" href="/user-job?limit=2&offset=0"
                     >Semua Lowongan</a
                   >
                 </div>
@@ -272,39 +285,35 @@
           </div>
         </nav>
 
-        <main
-          role="main"
-          class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content"
-        >
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main-content">
           <h2>Profil Anda</h2>
           <div class="container">
             <div class="row">
               <div class="col-md-2">
                 <img
-                  {% if user_info.profile_pic %}
+                  {%
+                  if
+                  user_info.profile_pic
+                  %}
                   src="static/{{ user_info.profile_pic }}"
-                  {% else %}
-                  
+                  {%
+                  else
+                  %}
                   src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
-                  {% endif %}
+                  {%
+                  endif
+                  %}
                   alt="Profile Picture"
                   class="img-fluid rounded-circle"
                 />
               </div>
               <div class="col-md-10">
+                <p>{{ user_info.username if user_info.username else 'Nama' }}</p>
+                <p>{{ user_info.address if user_info.address else 'Alamat' }}</p>
                 <p>
-                  {{ user_info.username if user_info.username else 'Nama' }}
+                  {{ user_info.department if user_info.department else 'Jurusan' }} - {{
+                  user_info.university if user_info.university else 'Universitas' }}
                 </p>
-                <p>
-                  {{ user_info.address if user_info.address else 'Alamat' }}
-                </p>
-                <p>
-                  {{ user_info.department if user_info.department else
-                  'Jurusan' }} - {{ user_info.university if user_info.university
-                  else 'Universitas' }}
-                </p>
-
-                
 
                 <div class="d-flex justify-content-end align-items-end">
                   <a href="/user-edit" class="btn btn-primary">Edit</a>
@@ -316,14 +325,22 @@
           <div class="container">
             <h2>Deskripsi Diri</h2>
             <p>
-              {{ user_info.description if user_info.description else
-                'Disini tempat untuk tampilan deskripsi diri dari user yang ada.' }}              
+              {{ user_info.description if user_info.description else 'Disini tempat untuk tampilan
+              deskripsi diri dari user yang ada.' }}
             </p>
           </div>
 
           <div class="container">
             <h2>Kualifikasi</h2>
+            {%if user_info.cv %}
             <a href="/download?path={{ user_info.cv }}">CV</a>
+            {%else%}
+            <a href="">CV (Lengkapi CV anda)</a>
+            {%endif%} {%if user_info.certification %}
+            <a href="/download?path={{ user_info.Sertifikasi }}">CV</a>
+            {%else%}
+            <a href="">Sertifikasi (Lengkapi Sertifikasi anda)</a>
+            {%endif%}
             <a href="/download?path={{ user_info.certification }}">Sertifikasi</a>
           </div>
           {%if jobs%}
@@ -345,68 +362,68 @@
 
     <div id="search-modal">
       <form method="GET" action="/search-job">
-      <h3>Cari Lowongan</h3>
-      <div id="search-container">
-        <input type="hidden" name="limit" value="4"/>
-        <input type="hidden" name="offset" value="0"/>
-        <input
-          type="text"
-          name="query"
-          class="form-control mb-2"
-          placeholder="Masukkan kata kunci..."
-        />
-        <div class="dropdown-menu-grid">
-          
-          <select class="form-control" id="prov" name="prov" >
-            <option selected value="">Provinsi</option>
-          </select>
-          <select class="form-control" id="kot" name="kot" >
-            <option selected value="">Kota</option>
-          </select>
-          <select class="form-control" name="tag1">
-            <option value="">pilih</option>
-            <option value="Cash-Management">Cash Management</option>
-            <option value="Microsft-Office">Microsft Office</option>
-            <option value="Adobe-Photoshop">Adobe Photoshop</option>
-            <option value="Figma">Figma</option>
-            <option value="Public-Speaking">Public Speaking</option>
-            <option value="Leadership">Leadership</option>
-            <option value="Web-Development">Web Development</option>
-            <option value="Desain-Web">Desain Web</option>
-            <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
-            <option value="Keperawatan">Keperawatan</option>
-           
-          </select>
-          <select class="form-control" name="tag2">
-            <option value="">pilih</option>
-            <option value="Cash-Management">Cash Management</option>
-            <option value="Microsft-Office">Microsft Office</option>
-            <option value="Adobe-Photoshop">Adobe Photoshop</option>
-            <option value="Figma">Figma</option>
-            <option value="Public-Speaking">Public Speaking</option>
-            <option value="Leadership">Leadership</option>
-            <option value="Web-Development">Web Development</option>
-            <option value="Desain-Web">Desain Web</option>
-            <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
-            <option value="Keperawatan">Keperawatan</option>
-           
-          </select>
+        <h3>Cari Lowongan</h3>
+        <div id="search-container">
+          <input type="hidden" name="limit" value="4" />
+          <input type="hidden" name="offset" value="0" />
+          <input
+            type="text"
+            name="query"
+            class="form-control mb-2"
+            placeholder="Masukkan kata kunci..."
+          />
+          <div class="dropdown-menu-grid">
+            <select class="form-control" id="prov" name="prov">
+              <option selected value="">Provinsi</option>
+            </select>
+            <select class="form-control" id="kot" name="kot">
+              <option selected value="">Kota</option>
+            </select>
+            <select class="form-control" name="tag1">
+              <option value="">pilih</option>
+              <option value="Cash-Management">Cash Management</option>
+              <option value="Microsft-Office">Microsft Office</option>
+              <option value="Adobe-Photoshop">Adobe Photoshop</option>
+              <option value="Figma">Figma</option>
+              <option value="Public-Speaking">Public Speaking</option>
+              <option value="Leadership">Leadership</option>
+              <option value="Web-Development">Web Development</option>
+              <option value="Desain-Web">Desain Web</option>
+              <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
+              <option value="Keperawatan">Keperawatan</option>
+            </select>
+            <select class="form-control" name="tag2">
+              <option value="">pilih</option>
+              <option value="Cash-Management">Cash Management</option>
+              <option value="Microsft-Office">Microsft Office</option>
+              <option value="Adobe-Photoshop">Adobe Photoshop</option>
+              <option value="Figma">Figma</option>
+              <option value="Public-Speaking">Public Speaking</option>
+              <option value="Leadership">Leadership</option>
+              <option value="Web-Development">Web Development</option>
+              <option value="Desain-Web">Desain Web</option>
+              <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
+              <option value="Keperawatan">Keperawatan</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <button
-        type="submit"
-        class="btn btn-primary mt-3 search-btn"        
-      >
-        Cari
-      </button>
-      <button
-        type="button"
-        class="btn btn-secondary mt-3 ml-2 search-btn"
-        onclick="hideSearchModal()"
-      >
-        Batal
-      </button>
-    </form>
+        <div class="d-flex">
+          <a
+            href="/search-job?limit=4&offset=0&query=&prov=&kot=&tag1=&tag2="
+            class="btn btn-primary mt-3 mr-auto search-btn"
+            >Lihat Semua</a
+          >
+
+          <button type="submit" class="btn btn-primary mt-3 search-btn">Cari</button>
+          <button
+            type="button"
+            class="btn btn-secondary mt-3 ml-2 search-btn"
+            onclick="hideSearchModal()"
+          >
+            Batal
+          </button>
+        </div>
+      </form>
     </div>
 
     <script>

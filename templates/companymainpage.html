@@ -290,7 +290,7 @@
                   Lowongan
                 </a>
                 <div class="dropdown-menu" aria-labelledby="page2Dropdown">
-                  <a style="color: black" class="dropdown-item" href="/company-job"
+                  <a style="color: black" class="dropdown-item" href="/company-job?limit=4&offset=0&query=&prov=&kot=&tag1=&tag2="
                     >Semua Lowongan</a
                   >
                   <a style="color: black" class="dropdown-item" href="/job-post"
@@ -330,7 +330,7 @@
     </div>
 
     <div id="search-modal">
-      <form method="GET" action="/search-job">
+      <form method="GET" action="/company-job">
         <h3>Cari Lowongan</h3>
         <div id="search-container">
           <input type="hidden" name="limit" value="4" />
@@ -380,16 +380,21 @@
             </select>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-3 search-btn">
-          Cari
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary mt-3 ml-2 search-btn"
-          onclick="hideSearchModal()"
-        >
-          Batal
-        </button>
+        <div class="d-flex">
+          <a
+            href="/company-job?limit=4&offset=0&query=&prov=&kot=&tag1=&tag2="
+            class="btn btn-primary mt-3 mr-auto search-btn"
+            >Lihat Semua</a
+          >
+          <button type="submit" class="btn btn-primary mt-3 search-btn">Cari</button>
+          <button
+            type="button"
+            class="btn btn-secondary mt-3 ml-2 search-btn"
+            onclick="hideSearchModal()"
+          >
+            Batal
+          </button>
+        </div>
       </form>
     </div>
 
