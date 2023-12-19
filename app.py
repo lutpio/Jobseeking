@@ -8,16 +8,22 @@ import uuid
 import requests
 from flask import Flask, send_file, render_template, jsonify, request, redirect, url_for
 from werkzeug.utils import secure_filename
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+MONGODB_URI = os.environ.get("MONGODB_URI")
+DB_NAME =  os.environ.get("DB_NAME")
 
 app = Flask(__name__)
 
-MONGODB_CONNECTION_STRING = "mongodb+srv://ahmadlutfi606:wolfattax@cluster0.xctxali.mongodb.net/?retryWrites=true&w=majority"
-client = MongoClient(MONGODB_CONNECTION_STRING)
-db = client.jobseeking
+client = MongoClient(MONGODB_URI)
+db = client[DB_NAME]
 
 SECRET_KEY = "SEEKER"
 TOKEN_KEY = "mytoken"
-
 
 @app.route("/")
 def index():
@@ -355,8 +361,10 @@ def search_job():
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
+        user_info = None  # Set user_info to None in case of decoding error
         return render_template(
             "searchresult.html",
+            user_info=user_info,
             output=output,
             prev_url=prev_url,
             next_url=next_url,
@@ -440,8 +448,8 @@ def company_job():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.company.find_one({"email": payload["id"]})
         if user_info:
-            offset = int(request.args["offset"])
-            limit = int(request.args["limit"])
+            offset = int(request.args.get("offset", 0))
+            limit = int(request.args.get("limit", 3))
             starting_id = db.jobs.find({"company": user_info["uuid"]}).sort("_id", -1)
             try:
                 last_id = starting_id[offset]["_id"]
@@ -712,8 +720,8 @@ def user_job():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
         if user_info:
-            offset = int(request.args["offset"])
-            limit = int(request.args["limit"])
+            offset = int(request.args.get("offset", 0))
+            limit = int(request.args.get("limit", 3))
             starting_id = db.applicant.find({"seeker": user_info["uuid"]}).sort(
                 "_id", -1
             )
@@ -868,7 +876,7 @@ def sign_in():
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
-            return jsonify({"result": "success", "token": token, "role": role})
+            return jsonify({"result": "success", "token": token.decode("utf-8"), "role": role})
 
         else:
             return jsonify(
