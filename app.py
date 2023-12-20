@@ -102,7 +102,9 @@ def job_post():
         user_info = db.company.find_one({"email": payload["id"]})
         if user_info:
             msg = request.args.get("msg")
-            return render_template("jobpost.html", user_info=user_info, msg=msg)
+            return render_template(
+                "jobpost.html", user_info=user_info, msg=msg, url="/job-post"
+            )
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -194,6 +196,7 @@ def seeker_jobdetail(uuid, uuid2):
                 jobs=jobs,
                 seeker=theseeker,
                 applicant=theapplicant,
+                url="/company-job",
             )
         return redirect(url_for("sign_in"))
 
@@ -213,7 +216,12 @@ def seeker_job(uuid):
         if user_info:
             jobs = db.jobs.find_one({"uuid": uuid})
 
-            return render_template("daftarpelamar.html", user_info=user_info, jobs=jobs)
+            return render_template(
+                "daftarpelamar.html",
+                user_info=user_info,
+                jobs=jobs,
+                url="/company-job",
+            )
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -233,7 +241,10 @@ def company_jobdetail(uuid):
             jobs = db.jobs.find_one({"uuid": uuid})
 
             return render_template(
-                "companyjobdetail.html", user_info=user_info, jobs=jobs
+                "companyjobdetail.html",
+                user_info=user_info,
+                jobs=jobs,
+                url="/company-job",
             )
         return redirect(url_for("sign_in"))
 
@@ -262,6 +273,7 @@ def search_job():
                 tag1=request.args["tag1"],
                 tag2=request.args["tag2"],
                 msg="Lowongan Hanya Sampai Sini",
+                url="/search-job",
             )
         )
 
@@ -356,6 +368,7 @@ def search_job():
                 next_url=next_url,
                 query=query,
                 msg=msg,
+                url="/search-job",
             )
         return redirect(url_for("sign_in"))
 
@@ -371,6 +384,7 @@ def search_job():
             next_url=next_url,
             query=query,
             msg=msg,
+            url="/search-job",
         )
 
 
@@ -391,6 +405,7 @@ def admin_job():
                     "adminjob.html",
                     user_info=user_info,
                     msg="sedang tidak ada lamaran",
+                    url="/admin-job",
                 )
             try:
                 last_id = starting_id[offset]["_id"]
@@ -401,6 +416,7 @@ def admin_job():
                         limit=str(limit),
                         offset=str(offset - limit),
                         msg="Lowongan Hanya Sampai Sini",
+                        url="/admin-job",
                     )
                 )
 
@@ -432,6 +448,7 @@ def admin_job():
                 prev_url=prev_url,
                 next_url=next_url,
                 msg=msg,
+                url="/admin-job",
             )
         return redirect(url_for("sign_in"))
 
@@ -566,6 +583,7 @@ def company_job():
                 prev_url=prev_url,
                 next_url=next_url,
                 msg=msg,
+                url="/company-job",
             )
         return redirect(url_for("sign_in"))
 
@@ -632,7 +650,9 @@ def companymain():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.company.find_one({"email": payload["id"]})
         if user_info:
-            return render_template("companymainpage.html", user_info=user_info)
+            return render_template(
+                "companymainpage.html", user_info=user_info, url="/company"
+            )
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -649,7 +669,10 @@ def usermain():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
         if user_info:
-            return render_template("usermainpage.html", user_info=user_info)
+            return render_template(
+                "usermainpage.html", user_info=user_info, url="/user"
+            )
+            # return render_template("userbase.html", user_info=user_info)
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -666,7 +689,10 @@ def user_editFile():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         if "formFile" in request.files:
             if request.form["realFile"]:
-                os.remove(f"./static/{request.form['realFile']}")
+                try:
+                    os.remove(f"./static/{request.form['realFile']}")
+                except FileNotFoundError:
+                    a = "Not Found"
         file = request.files.get("formFile")
         folder_receive = request.form["folder"]
         filename = secure_filename(file.filename)
@@ -681,7 +707,8 @@ def user_editFile():
                 {"uuid": request.form["uuid"]},
                 {"$set": new_doc},
             )
-            return redirect(url_for("user_edit"))
+            return redirect(url_for("user_edit", msg="Update Profile Berhasil"))
+            # return redirect(url_for("user_edit"))
         elif payload["role"] == "perusahaan":
             db.company.update_one(
                 {"uuid": request.form["uuid"]},
@@ -701,7 +728,10 @@ def user_editFile():
 def download_file():
     theFile = request.args["path"]
     p = f"static/{theFile}"
-    return send_file(p, as_attachment=True)
+    try:
+        return send_file(p, as_attachment=True)
+    except FileNotFoundError:
+        return "Not Found"
 
 
 @app.route("/company-edit", methods=["GET", "POST"])
@@ -731,13 +761,7 @@ def company_edit():
             {"uuid": uuid_receive},
             {"$set": new_doc},
         )
-
-        return jsonify(
-            {
-                "result": "success",
-                "msg": "Edit Perusahaan Berhasil",
-            }
-        )
+        return redirect(url_for("company_edit", msg="Edit Perusahaan Berhasil"))
 
     token_receive = request.cookies.get(TOKEN_KEY)
     # token_receive = request.cookies.get("mytoken")
@@ -745,7 +769,10 @@ def company_edit():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.company.find_one({"email": payload["id"]})
         if user_info:
-            return render_template("editProfileCompany.html", user_info=user_info)
+            msg = request.args.get("msg")
+            return render_template(
+                "editProfileCompany.html", user_info=user_info, msg=msg
+            )
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
@@ -779,6 +806,7 @@ def user_edit():
             {"uuid": uuid_receive},
             {"$set": new_doc},
         )
+        return redirect(url_for("user_edit", msg="Update Profile Berhasil"))
 
     token_receive = request.cookies.get(TOKEN_KEY)
     # token_receive = request.cookies.get("mytoken")
@@ -786,13 +814,29 @@ def user_edit():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.seeker.find_one({"email": payload["id"]})
         if user_info:
-            return render_template("editProfile.html", user_info=user_info)
+            msg = request.args.get("msg")
+            return render_template(
+                "editProfile.html", user_info=user_info, msg=msg, url="/user"
+            )
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("sign_in", msg="There was problem logging you in"))
+
+
+@app.route("/user-job-cancel", methods=["POST"])
+def user_jobCancel():
+    id_applicant = request.form["id_applicant"]
+    db.applicant.delete_one({"uuid": id_applicant})
+    return redirect(url_for("usermain", msg="Berhasil Cancel Lamaran"))
+
+@app.route("/company-job-cancel", methods=["POST"])
+def company_jobCancel():
+    id_jobs = request.form["id_jobs"]
+    db.jobs.delete_one({"uuid": id_jobs})
+    return redirect(url_for("job_post", msg="Berhasil Hapus Lowongan"))
 
 
 @app.route("/user-job")
@@ -808,7 +852,18 @@ def user_job():
             starting_id = db.applicant.find({"seeker": user_info["uuid"]}).sort(
                 "_id", -1
             )
-            last_id = starting_id[offset]["_id"]
+            try:
+                last_id = starting_id[offset]["_id"]
+            except IndexError:
+                return redirect(
+                    url_for(
+                        "user_job",
+                        limit=str(limit),
+                        offset=str(offset - limit),
+                        msg="Lowongan Hanya Sampai Sini",
+                        url="/user-job",
+                    )
+                )
             jobku = []
             for i in starting_id:
                 jobku.append(i["job"])
@@ -823,6 +878,7 @@ def user_job():
                         limit=str(limit),
                         offset=str(offset - limit),
                         msg="Lowongan Hanya Sampai Sini",
+                        url="/user-job",
                     )
                 )
 
@@ -849,6 +905,7 @@ def user_job():
                 msg=msg,
                 next_url=next_url,
                 prev_url=prev_url,
+                url="/user-job",
             )
         return redirect(url_for("sign_in"))
 
@@ -879,7 +936,10 @@ def admin_jobdetail(uuid2):
         if user_info:
             jobs2 = db.jobs.find_one({"uuid": uuid2})
             return render_template(
-                "adminjobdetail.html", user_info=user_info, jobs=jobs2
+                "adminjobdetail.html",
+                user_info=user_info,
+                jobs=jobs2,
+                url="/admin-job",
             )
         return redirect(url_for("sign_in"))
 
@@ -915,14 +975,22 @@ def user_jobdetail(uuid2):
             if cek is None:
                 cek = "belum Daftar"
             return render_template(
-                "userjobdetail.html", user_info=user_info, jobs=jobs2, cek=cek
+                "userjobdetail.html",
+                user_info=user_info,
+                jobs=jobs2,
+                cek=cek,
+                url="/user-job",
             )
         return redirect(url_for("sign_in"))
 
     except jwt.ExpiredSignatureError:
         return redirect(url_for("sign_in", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
-        return render_template("userjobdetail.html", jobs=jobs2)
+        return render_template(
+            "userjobdetail.html",
+            jobs=jobs2,
+            url="/search-job",
+        )
 
 
 @app.route("/sign-in", methods=["GET", "POST"])

@@ -1,509 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    />
-    <title>Work Detail</title>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css" />
-    <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
-    <style>
-      body {
-        font-family: "Arial", sans-serif;
-        background-color: #f8f9fa;
-      }
-
-      #sidebar {
-        background-color: transparent;
-        color: black;
-        height: 100vh;
-        width: 160px;
-        padding-top: 80px;
-      }
-
-      #sidebar a {
-        color: black;
-      }
-
-      nav {
-        background-color: white;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-      }
-
-      nav a {
-        color: black;
-      }
-
-      .navbar-toggler-icon {
-        background-color: #fff;
-      }
-
-      #quill-modal,
-      #search-modal {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 20px;
-        z-index: 1000;
-        border: 1px solid #ccc;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      #editor-container-modal,
-      #search-container {
-        height: 200px;
-        overflow-y: auto;
-        margin-bottom: 10px;
-      }
-
-      .badge-rounded {
-        border-radius: 10px;
-        padding: 8px 12px;
-        margin-right: 8px;
-        cursor: pointer;
-      }
-
-      .badge-primary {
-        background-color: #007bff;
-        color: #fff;
-      }
-
-      .search-btn {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-
-      .search-btn:hover {
-        background-color: #0056b3;
-      }
-
-      .dropdown-menu-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-
-      .dropdown-menu-grid a {
-        display: block;
-        padding: 10px;
-        color: #000;
-        text-decoration: none;
-      }
-
-      .dropdown-menu-grid a:hover {
-        background-color: #007bff;
-        color: #fff;
-      }
-
-      .search-container select {
-        margin-bottom: 10px;
-      }
-
-      .center-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 80vh;
-        padding-top: 550px;
-      }
-
-      .input-container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 80%;
-      }
-
-      trix-toolbar [data-trix-button-group="file-tools"] {
-        display: none;
-      }
-      trix-toolbar [data-trix-attribute="code"] {
-        display: none;
-      }
-      trix-toolbar [data-trix-attribute="quote"] {
-        display: none;
-      }
-    </style>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const provinceSelect = document.getElementById("prov");
-        const regencySelect = document.getElementById("kot");
-
-        // Fetch provinces
-        fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
-          .then((response) => response.json())
-          .then((provinces) => {
-            // Populate province select
-            provinces.forEach((province) => {
-              const option = document.createElement("option");
-              option.value = province.id;
-              option.text = province.name;
-              provinceSelect.appendChild(option);
-            });
-          });
-
-        // Event listener for province select change
-        provinceSelect.addEventListener("change", function () {
-          const selectedProvinceId = this.value;
-
-          // Clear existing options in the regency select
-          regencySelect.innerHTML = '<option selected value="">Open this select menu</option>';
-
-          if (selectedProvinceId) {
-            // Fetch regencies based on the selected province
-            fetch(
-              `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinceId}.json`
-            )
-              .then((response) => response.json())
-              .then((regencies) => {
-                // Populate regency select
-                regencies.forEach((regency) => {
-                  const option = document.createElement("option");
-                  option.value = regency.id;
-                  option.text = regency.name;
-                  regencySelect.appendChild(option);
-                });
-              });
-          }
-        });
-      });
-
-      function logout() {
-        $.removeCookie("mytoken", { path: "/" });
-        window.location.replace("/sign-in");
-      }
-    </script>
-  </head>
-
-  <body>
-    <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
-      <a class="navbar-brand" href="index.html">Placeholder</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="page2Dropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/3794/3794813.png?ga=GA1.1.1358335958.1701954208"
-                alt=""
-                width="20"
-                height="20"
-                class="d-inline-block align-text-top"
-              />
-
-              {{user_info.name}}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="page2Dropdown">
-              <a style="color: black" class="dropdown-item" href="/company-info">Profil</a>
-              <a style="color: black" class="dropdown-item" onclick="logout()">Log Out</a>
-            </div>
-          </li>
-        </ul>
+{% extends "companybase.html" %} {% block content %}
+<div class="container mt-4 center-container">
+  <form action="/job-post" method="POST" class="input-container">
+    {% if msg %}
+    <div class="alert alert-warning mt-5 mb-0" role="alert">{{ msg }}</div>
+    {% endif %}
+    <h2>Tambah Lowongan</h2>
+    <div class="row">
+      <div class="col-md-12 mb-3">
+        <label for="position">Posisi</label>
+        <input type="hidden" name="uuid" value="{{ user_info.uuid }}" />
+        <input
+          type="text"
+          class="form-control"
+          id="position"
+          name="position"
+          placeholder=""
+          required
+        />
       </div>
-    </nav>
-
-    <div class="container-fluid">
-      <div class="row">
-        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block fixed-left position-fixed">
-          <div class="sidebar-sticky">
-            <ul class="nav flex-column">
-              <li class="nav-item">
-                <a class="nav-link active" href="/company">
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/10263/10263239.png?ga=GA1.1.1358335958.1701954208"
-                    class="b1 me-2"
-                    height="16"
-                    width="16"
-                  />
-                  Home
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSearchModal()">
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/151/151773.png?ga=GA1.1.1358335958.1701954208"
-                    class="b1 me-2"
-                    height="16"
-                    width="16"
-                  />
-
-                  Cari Lowongan
-                </a>
-              </li>
-              <li class="nav-item dropdown">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  id="page2Dropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/4389/4389454.png?ga=GA1.1.1358335958.1701954208"
-                    class="b1 me-2"
-                    height="16"
-                    width="16"
-                  />
-                  Lowongan
-                </a>
-                <div class="dropdown-menu" aria-labelledby="page2Dropdown">
-                  <a
-                    style="color: black"
-                    class="dropdown-item"
-                    href="/company-job?limit=4&offset=0&query=&prov=&kot=&tag1=&tag2="
-                    >Semua Lowongan</a
-                  >
-                  <a style="color: black" class="dropdown-item" href="/job-post">Tambah Lowongan</a>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        <div class="container mt-4 center-container">
-          <form action="/job-post" method="POST" class="input-container">
-            {% if msg %}
-            <div class="alert alert-warning mt-5 mb-0" role="alert">{{ msg }}</div>
-            {% endif %}
-            <h2>Tambah Lowongan</h2>
-            <div class="row">
-              <div class="col-md-12 mb-3">
-                <label for="position">Posisi</label>
-                <input type="hidden" name="uuid" value="{{ user_info.uuid }}" />
-                <input
-                  type="text"
-                  class="form-control"
-                  id="position"
-                  name="position"
-                  placeholder=""
-                  required
-                />
-              </div>
-              <div class="col-md-12 mb-3">
-                <label for="description">Deskripsi Posisi</label>
-                <input id="description" type="hidden" name="description" />
-                <trix-editor input="description"></trix-editor>
-              </div>
-              <div class="col-md-3 mb-3">
-                <label for="prov">Provinsi</label>
-                <select class="form-control" id="prov" name="prov" required>
-                  <option selected value="">Open this select menu</option>
-                </select>
-              </div>
-
-              <div class="col-md-3 mb-3">
-                <label for="kot">Kota</label>
-                <select class="form-control" id="kot" name="kot" required>
-                  <option selected value="">Open this select menu</option>
-                </select>
-              </div>
-
-              <div class="col-md-6 mb-3">
-                <label for="address">Alamat Lengkap</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="address"
-                  name="address"
-                  required
-                  placeholder="Alamat Lengkap"
-                />
-              </div>
-              <div class="col-md-12 mb-3">
-                <label for="time_period">Jangka Waktu Magang</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="time_period"
-                  required
-                  name="time_period"
-                  placeholder=""
-                />
-              </div>
-              <div class="col-md-3 mb-3">
-                <label for="wage_min">Gaji Minimal</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="wage_min"
-                  required
-                  name="wage_min"
-                  placeholder="Rp."
-                />
-              </div>
-              <div class="col-md-3 mb-3">
-                <label for="wage_max">Gaji Maksimal</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="wage_max"
-                  name="wage_max"
-                  required
-                  placeholder="Rp."
-                />
-              </div>
-              <div class="col-md-12 mb-3">
-                <label for="department">Jurusan</label>
-                <select class="form-control" id="department" name="department" required>
-                  <option value="">pilih</option>
-                  <option value="Kedokteran-Keperawatan">Kedokteran-Keperawatan</option>
-                  <option value="Akuntansi-Keuangan">Akuntansi-Keuangan</option>
-                  <option value="Media-Komunikasi">Media-Komunikasi</option>
-                  <option value="IT">IT</option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="tag1">Tag 1</label>
-                <select class="form-control" id="tag1" name="tag1" required>
-                  <option value="">pilih</option>
-                  <option value="Cash-Management">Cash Management</option>
-                  <option value="Microsft-Office">Microsft Office</option>
-                  <option value="Adobe-Photoshop">Adobe Photoshop</option>
-                  <option value="Figma">Figma</option>
-                  <option value="Public-Speaking">Public Speaking</option>
-                  <option value="Leadership">Leadership</option>
-                  <option value="Web-Development">Web Development</option>
-                  <option value="Desain-Web">Desain Web</option>
-                  <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
-                  <option value="Keperawatan">Keperawatan</option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="tag2">Tag 2</label>
-                <select class="form-control" id="tag2" name="tag2" required>
-                  <option value="">pilih</option>
-                  <option value="Cash-Management">Cash Management</option>
-                  <option value="Microsft-Office">Microsft Office</option>
-                  <option value="Adobe-Photoshop">Adobe Photoshop</option>
-                  <option value="Figma">Figma</option>
-                  <option value="Public-Speaking">Public Speaking</option>
-                  <option value="Leadership">Leadership</option>
-                  <option value="Web-Development">Web Development</option>
-                  <option value="Desain-Web">Desain Web</option>
-                  <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
-                  <option value="Keperawatan">Keperawatan</option>
-                </select>
-              </div>
-              <div class="col-md-10 mt-3">
-                <button type="button" class="btn btn-warning float-right">Cancel</button>
-              </div>
-              <div class="col-md-2 mt-3">
-                <button type="submit" class="btn btn-primary float-right">Tambah</button>
-              </div>
-            </div>
-          </form>
-        </div>
+      <div class="col-md-12 mb-3">
+        <label for="description">Deskripsi Posisi</label>
+        <input id="description" type="hidden" name="description" />
+        <trix-editor input="description"></trix-editor>
       </div>
-    </div>
-    <div id="search-modal">
-      <form method="GET" action="/company-job">
-        <h3>Cari Lowongan</h3>
-        <div id="search-container">
-          <input type="hidden" name="limit" value="4" />
-          <input type="hidden" name="offset" value="0" />
-          <input
-            type="text"
-            name="query"
-            class="form-control mb-2"
-            placeholder="Masukkan kata kunci..."
-          />
-          <div class="dropdown-menu-grid">
-            <select class="form-control" id="prov" name="prov">
-              <option selected value="">Provinsi</option>
-            </select>
-            <select class="form-control" id="kot" name="kot">
-              <option selected value="">Kota</option>
-            </select>
-            <select class="form-control" name="tag1">
-              <option value="">pilih</option>
-              <option value="Cash-Management">Cash Management</option>
-              <option value="Microsft-Office">Microsft Office</option>
-              <option value="Adobe-Photoshop">Adobe Photoshop</option>
-              <option value="Figma">Figma</option>
-              <option value="Public-Speaking">Public Speaking</option>
-              <option value="Leadership">Leadership</option>
-              <option value="Web-Development">Web Development</option>
-              <option value="Desain-Web">Desain Web</option>
-              <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
-              <option value="Keperawatan">Keperawatan</option>
-            </select>
-            <select class="form-control" name="tag2">
-              <option value="">pilih</option>
-              <option value="Cash-Management">Cash Management</option>
-              <option value="Microsft-Office">Microsft Office</option>
-              <option value="Adobe-Photoshop">Adobe Photoshop</option>
-              <option value="Figma">Figma</option>
-              <option value="Public-Speaking">Public Speaking</option>
-              <option value="Leadership">Leadership</option>
-              <option value="Web-Development">Web Development</option>
-              <option value="Desain-Web">Desain Web</option>
-              <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
-              <option value="Keperawatan">Keperawatan</option>
-            </select>
-          </div>
-        </div>
-        <div class="d-flex">
-          <a
-            href="/company-job?limit=4&offset=0&query=&prov=&kot=&tag1=&tag2="
-            class="btn btn-primary mt-3 mr-auto search-btn"
-            >Lihat Semua</a
-          >
-          <button type="submit" class="btn btn-primary mt-3 search-btn">Cari</button>
-          <button
-            type="button"
-            class="btn btn-secondary mt-3 ml-2 search-btn"
-            onclick="hideSearchModal()"
-          >
-            Batal
-          </button>
-        </div>
-      </form>
-    </div>
-    <script>
-      function showSearchModal() {
-        document.getElementById("search-modal").style.display = "block";
-      }
+      <div class="col-md-3 mb-3">
+        <label for="prov1">Provinsi</label>
+        <select class="form-control" id="prov1" name="prov" required>
+          <option selected value="">Open this select menu</option>
+        </select>
+      </div>
 
-      function hideSearchModal() {
-        document.getElementById("search-modal").style.display = "none";
-      }
-    </script>
-  </body>
-</html>
+      <div class="col-md-3 mb-3">
+        <label for="kot1">Kota</label>
+        <select class="form-control" id="kot1" name="kot" required>
+          <option selected value="">Open this select menu</option>
+        </select>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="address">Alamat Lengkap</label>
+        <input
+          type="text"
+          class="form-control"
+          id="address"
+          name="address"
+          required
+          placeholder="Alamat Lengkap"
+        />
+      </div>
+      <div class="col-md-12 mb-3">
+        <label for="time_period">Jangka Waktu Magang</label>
+        <input
+          type="text"
+          class="form-control"
+          id="time_period"
+          required
+          name="time_period"
+          placeholder=""
+        />
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="wage_min">Gaji Minimal</label>
+        <input
+          type="number"
+          class="form-control"
+          id="wage_min"
+          required
+          name="wage_min"
+          placeholder="Rp."
+        />
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="wage_max">Gaji Maksimal</label>
+        <input
+          type="number"
+          class="form-control"
+          id="wage_max"
+          name="wage_max"
+          required
+          placeholder="Rp."
+        />
+      </div>
+      <div class="col-md-12 mb-3">
+        <label for="department">Jurusan</label>
+        <select class="form-control" id="department" name="department" required>
+          <option value="">pilih</option>
+          <option value="Kedokteran-Keperawatan">Kedokteran-Keperawatan</option>
+          <option value="Akuntansi-Keuangan">Akuntansi-Keuangan</option>
+          <option value="Media-Komunikasi">Media-Komunikasi</option>
+          <option value="IT">IT</option>
+        </select>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="tag1">Tag 1</label>
+        <select class="form-control" id="tag1" name="tag1" required>
+          <option value="">pilih</option>
+          <option value="Cash-Management">Cash Management</option>
+          <option value="Microsft-Office">Microsft Office</option>
+          <option value="Adobe-Photoshop">Adobe Photoshop</option>
+          <option value="Figma">Figma</option>
+          <option value="Public-Speaking">Public Speaking</option>
+          <option value="Leadership">Leadership</option>
+          <option value="Web-Development">Web Development</option>
+          <option value="Desain-Web">Desain Web</option>
+          <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
+          <option value="Keperawatan">Keperawatan</option>
+        </select>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="tag2">Tag 2</label>
+        <select class="form-control" id="tag2" name="tag2" required>
+          <option value="">pilih</option>
+          <option value="Cash-Management">Cash Management</option>
+          <option value="Microsft-Office">Microsft Office</option>
+          <option value="Adobe-Photoshop">Adobe Photoshop</option>
+          <option value="Figma">Figma</option>
+          <option value="Public-Speaking">Public Speaking</option>
+          <option value="Leadership">Leadership</option>
+          <option value="Web-Development">Web Development</option>
+          <option value="Desain-Web">Desain Web</option>
+          <option value="Penjualan-Pemasaran">Penjualan dan Pemasaran</option>
+          <option value="Keperawatan">Keperawatan</option>
+        </select>
+      </div>
+      <div class="col-12 mt-3 d-flex">
+        <button type="button" class="btn btn-outline-primary ms-auto">Cancel</button>
+        <button type="submit" class="btn btn-primary ms-2">Tambah</button>
+      </div>     
+    </div>
+  </form>
+</div>
+{% endblock %}
